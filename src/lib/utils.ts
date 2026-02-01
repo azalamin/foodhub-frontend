@@ -16,3 +16,19 @@ export const handleLogout = async () => {
 		},
 	});
 };
+
+export function buildQuery(params: Record<string, string | string[] | undefined>) {
+	const query = new URLSearchParams();
+
+	for (const [key, value] of Object.entries(params)) {
+		if (!value) continue;
+
+		if (Array.isArray(value)) {
+			value.forEach(v => query.append(key, v));
+		} else {
+			query.set(key, value);
+		}
+	}
+
+	return query.toString();
+}
