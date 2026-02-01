@@ -1,11 +1,8 @@
+import { userService } from "@/service/user.service";
+
 type Role = "ADMIN" | "PROVIDER" | "CUSTOMER";
 
-function getUserRole(): Role {
-	// later comes from auth/session
-	return "ADMIN";
-}
-
-export default function DashboardLayout({
+export default async function DashboardLayout({
 	admin,
 	provider,
 	customer,
@@ -14,7 +11,9 @@ export default function DashboardLayout({
 	provider: React.ReactNode;
 	customer: React.ReactNode;
 }) {
-	const role = getUserRole();
+	const { data } = await userService.getSession();
+
+	const role = data.user.role;
 
 	switch (role) {
 		case "ADMIN":

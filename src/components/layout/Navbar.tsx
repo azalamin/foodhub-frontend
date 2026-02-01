@@ -33,27 +33,26 @@ interface MenuItem {
 	url: string;
 }
 
-/* ------------------------------------------------------------------ */
-/* MOCK AUTH (replace later with real auth) */
-/* ------------------------------------------------------------------ */
+type UserRole = "CUSTOMER" | "PROVIDER" | "ADMIN";
 
-const user = {
-	name: "Al Amin",
-	role: "ADMIN", // CUSTOMER | PROVIDER | ADMIN | null
-};
+interface UserType {
+	name: string;
+	role: UserRole;
+}
 
-// const user = {
-// 	name: "Al Amin",
-// 	role: "CUSTOMER", // CUSTOMER | PROVIDER | ADMIN | null
-// };
+interface NavbarProps {
+	user: UserType | null;
+}
+
+/* ------------------------------------------------------------------ */
 
 const cartCount = 2;
 
 /* ------------------------------------------------------------------ */
-/* COMPONENT */
+/* NAVBAR */
 /* ------------------------------------------------------------------ */
 
-export function Navbar() {
+export function Navbar({ user }: NavbarProps) {
 	const pathname = usePathname();
 	const { theme, setTheme } = useTheme();
 
@@ -119,11 +118,10 @@ export function Navbar() {
 					</Link>
 
 					{/* USER / AUTH */}
-					{user ? <UserMenu /> : <AuthButtons />}
-					{/* <AuthButtons /> */}
+					{user ? <UserMenu user={user} /> : <AuthButtons />}
 
 					{/* MOBILE MENU */}
-					<MobileMenu menu={menu} pathname={pathname} />
+					<MobileMenu menu={menu} pathname={pathname} user={user} />
 				</div>
 			</div>
 		</header>
@@ -131,7 +129,7 @@ export function Navbar() {
 }
 
 /* ------------------------------------------------------------------ */
-/* SUB COMPONENTS */
+/* AUTH BUTTONS */
 /* ------------------------------------------------------------------ */
 
 function AuthButtons() {
@@ -147,7 +145,11 @@ function AuthButtons() {
 	);
 }
 
-function UserMenu() {
+/* ------------------------------------------------------------------ */
+/* USER MENU (DESKTOP) */
+/* ------------------------------------------------------------------ */
+
+function UserMenu({ user }: { user: UserType }) {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -174,7 +176,7 @@ function UserMenu() {
 				{user.role === "PROVIDER" && (
 					<>
 						<DropdownMenuItem asChild>
-							<Link href='/provider-dashboard/'>Dashboard</Link>
+							<Link href='/provider-dashboard'>Dashboard</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem asChild>
 							<Link href='/provider/menu'>My Menu</Link>
@@ -196,7 +198,19 @@ function UserMenu() {
 	);
 }
 
-function MobileMenu({ menu, pathname }: { menu: MenuItem[]; pathname: string }) {
+/* ------------------------------------------------------------------ */
+/* MOBILE MENU */
+/* ------------------------------------------------------------------ */
+
+function MobileMenu({
+	menu,
+	pathname,
+	user,
+}: {
+	menu: MenuItem[];
+	pathname: string;
+	user: UserType | null;
+}) {
 	return (
 		<Sheet>
 			<SheetTrigger asChild>
@@ -234,12 +248,44 @@ function MobileMenu({ menu, pathname }: { menu: MenuItem[]; pathname: string }) 
 					</Accordion>
 
 					<div className='flex flex-col gap-3'>
-						<Button asChild variant='outline'>
-							<Link href='/login'>Login</Link>
-						</Button>
-						<Button asChild>
-							<Link href='/register'>Sign up</Link>
-						</Button>
+						{user ? (
+							<>
+								<Link href='/dashboard/profile' className='font-medium'>
+									My Profile
+								</Link>
+
+								{user.role === "CUSTOMER" && (
+									<Link href='/dashboard/orders' className='font-medium'>
+										My Orders
+									</Link>
+								)}
+
+								{user.role === "PROVIDER" && (
+									<Link href='/provider-dashboard' className='font-medium'>
+										Provider Dashboard
+									</Link>
+								)}
+
+								{user.role === "ADMIN" && (
+									<Link href='/admin-dashboard' className='font-medium'>
+										Admin Dashboard
+									</Link>
+								)}
+
+								<Button variant='outline' className='text-red-500'>
+									Logout
+								</Button>
+							</>
+						) : (
+							<>
+								<Button asChild variant='outline'>
+									<Link href='/login'>Login</Link>
+								</Button>
+								<Button asChild>
+									<Link href='/register'>Sign up</Link>
+								</Button>
+							</>
+						)}
 					</div>
 				</div>
 			</SheetContent>
