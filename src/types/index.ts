@@ -5,3 +5,5 @@ export type {
 	OrderStatus,
 	OrderWithCustomer,
 } from "./order.types";
+
+export type { SearchParams } from "./meal.types";

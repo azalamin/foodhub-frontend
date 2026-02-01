@@ -1,3 +1,4 @@
+import { SearchParams } from "@/types";
 import { clsx, type ClassValue } from "clsx";
 import { redirect } from "next/navigation";
 import { twMerge } from "tailwind-merge";
@@ -17,7 +18,7 @@ export const handleLogout = async () => {
 	});
 };
 
-export function buildQuery(params: Record<string, string | string[] | undefined>) {
+export function buildQuery(params: SearchParams) {
 	const query = new URLSearchParams();
 
 	for (const [key, value] of Object.entries(params)) {
