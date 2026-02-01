@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { SidebarLink } from "@/components/ui/SidebarLink";
+import { handleLogout } from "@/lib/utils";
 import { LogOut } from "lucide-react";
 
 type Role = "ADMIN" | "PROVIDER" | "CUSTOMER";
@@ -55,6 +56,7 @@ export function Sidebar({ role }: SidebarProps) {
 				<Button
 					variant='ghost'
 					className='w-full justify-start text-red-500 hover:bg-red-50 dark:hover:bg-red-950'
+					onClick={() => handleLogout()}
 				>
 					<LogOut className='mr-2 h-4 w-4' />
 					Log out

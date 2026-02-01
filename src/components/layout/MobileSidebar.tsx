@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { SidebarLink } from "@/components/ui/SidebarLink";
+import { handleLogout } from "@/lib/utils";
 import { LogOut, Menu } from "lucide-react";
 
 type Role = "ADMIN" | "PROVIDER" | "CUSTOMER";
@@ -46,7 +47,11 @@ export function MobileSidebar({ role }: { role: Role }) {
 				</nav>
 
 				<div className='border-t p-4'>
-					<Button variant='ghost' className='w-full justify-start text-red-500'>
+					<Button
+						variant='ghost'
+						className='w-full justify-start text-red-500'
+						onClick={() => handleLogout()}
+					>
 						<LogOut className='mr-2 h-4 w-4' />
 						Log out
 					</Button>

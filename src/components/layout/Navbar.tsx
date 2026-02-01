@@ -5,7 +5,7 @@ import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { cn } from "@/lib/utils";
+import { cn, handleLogout } from "@/lib/utils";
 
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -192,7 +192,9 @@ function UserMenu({ user }: { user: UserType }) {
 
 				<hr className='my-1' />
 
-				<DropdownMenuItem className='text-red-500'>Logout</DropdownMenuItem>
+				<DropdownMenuItem className='text-red-500' onClick={() => handleLogout()}>
+					Logout
+				</DropdownMenuItem>
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
@@ -272,7 +274,7 @@ function MobileMenu({
 									</Link>
 								)}
 
-								<Button variant='outline' className='text-red-500'>
+								<Button variant='outline' className='text-red-500' onClick={() => handleLogout()}>
 									Logout
 								</Button>
 							</>

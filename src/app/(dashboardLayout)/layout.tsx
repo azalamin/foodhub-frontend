@@ -1,7 +1,5 @@
 import { userService } from "@/service/user.service";
 
-type Role = "ADMIN" | "PROVIDER" | "CUSTOMER";
-
 export default async function DashboardLayout({
 	admin,
 	provider,

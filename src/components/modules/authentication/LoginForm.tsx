@@ -19,6 +19,7 @@ import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/c
 import { Input } from "@/components/ui/input";
 
 import { loginSchema } from "@/schemas/login.schema";
+import { redirect } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
@@ -34,7 +35,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 			const toastId = toast.loading("Logging in...");
 
 			try {
-				const { error } = await authClient.signIn.email({
+				const { error, data } = await authClient.signIn.email({
 					email: value.email,
 					password: value.password,
 				});
@@ -45,6 +46,10 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 				}
 
 				toast.success("Logged in successfully!", { id: toastId });
+
+				if (data) {
+					redirect("/");
+				}
 			} catch {
 				toast.error("Something went wrong, please try again.", { id: toastId });
 			}
@@ -122,7 +127,12 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 
 			<CardFooter className='flex flex-col gap-5'>
 				{/* LOGIN */}
-				<Button form='login-form' type='submit' className='w-full'>
+				<Button
+					form='login-form'
+					type='submit'
+					className='w-full'
+					disabled={form.state.isSubmitting}
+				>
 					Login
 				</Button>
 
