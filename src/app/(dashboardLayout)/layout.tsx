@@ -2,7 +2,7 @@ type Role = "ADMIN" | "PROVIDER" | "CUSTOMER";
 
 function getUserRole(): Role {
 	// later comes from auth/session
-	return "CUSTOMER";
+	return "ADMIN";
 }
 
 export default function DashboardLayout({

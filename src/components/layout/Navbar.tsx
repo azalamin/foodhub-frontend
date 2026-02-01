@@ -39,7 +39,7 @@ interface MenuItem {
 
 const user = {
 	name: "Al Amin",
-	role: "CUSTOMER", // CUSTOMER | PROVIDER | ADMIN | null
+	role: "ADMIN", // CUSTOMER | PROVIDER | ADMIN | null
 };
 
 // const user = {
@@ -162,19 +162,19 @@ function UserMenu() {
 
 			<DropdownMenuContent align='end' className='w-48'>
 				<DropdownMenuItem asChild>
-					<Link href='/profile'>My Profile</Link>
+					<Link href='/dashboard/profile'>My Profile</Link>
 				</DropdownMenuItem>
 
 				{user.role === "CUSTOMER" && (
 					<DropdownMenuItem asChild>
-						<Link href='/orders'>My Orders</Link>
+						<Link href='/dashboard/orders'>My Orders</Link>
 					</DropdownMenuItem>
 				)}
 
 				{user.role === "PROVIDER" && (
 					<>
 						<DropdownMenuItem asChild>
-							<Link href='/provider/dashboard'>Dashboard</Link>
+							<Link href='/provider-dashboard/'>Dashboard</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem asChild>
 							<Link href='/provider/menu'>My Menu</Link>
@@ -184,7 +184,7 @@ function UserMenu() {
 
 				{user.role === "ADMIN" && (
 					<DropdownMenuItem asChild>
-						<Link href='/admin'>Admin Dashboard</Link>
+						<Link href='/admin-dashboard'>Admin Dashboard</Link>
 					</DropdownMenuItem>
 				)}
 
