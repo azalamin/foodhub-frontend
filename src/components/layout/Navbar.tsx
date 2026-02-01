@@ -37,10 +37,11 @@ interface MenuItem {
 /* MOCK AUTH (replace later with real auth) */
 /* ------------------------------------------------------------------ */
 
-// const user = {
-// 	name: "Al Amin",
-// 	role: "CUSTOMER", // CUSTOMER | PROVIDER | ADMIN | null
-// };
+const user = {
+	name: "Al Amin",
+	role: "CUSTOMER", // CUSTOMER | PROVIDER | ADMIN | null
+};
+
 // const user = {
 // 	name: "Al Amin",
 // 	role: "CUSTOMER", // CUSTOMER | PROVIDER | ADMIN | null
@@ -106,7 +107,7 @@ export function Navbar() {
 					</Button>
 
 					{/* CART */}
-					<Link href='/cart' className='relative'>
+					<Link href='/cart' className='relative mr-1'>
 						<Button variant='ghost' size='icon'>
 							<ShoppingCart className='h-5 w-5' />
 						</Button>
@@ -118,9 +119,8 @@ export function Navbar() {
 					</Link>
 
 					{/* USER / AUTH */}
-					{/* {user ? <UserMenu /> : <AuthButtons />} */}
-					{/* {user ? <UserMenu /> : } */}
-					<AuthButtons />
+					{user ? <UserMenu /> : <AuthButtons />}
+					{/* <AuthButtons /> */}
 
 					{/* MOBILE MENU */}
 					<MobileMenu menu={menu} pathname={pathname} />
@@ -165,7 +165,7 @@ function UserMenu() {
 					<Link href='/profile'>My Profile</Link>
 				</DropdownMenuItem>
 
-				{/* {user.role === "CUSTOMER" && (
+				{user.role === "CUSTOMER" && (
 					<DropdownMenuItem asChild>
 						<Link href='/orders'>My Orders</Link>
 					</DropdownMenuItem>
@@ -188,7 +188,7 @@ function UserMenu() {
 					</DropdownMenuItem>
 				)}
 
-				<hr className='my-1' /> */}
+				<hr className='my-1' />
 
 				<DropdownMenuItem className='text-red-500'>Logout</DropdownMenuItem>
 			</DropdownMenuContent>
