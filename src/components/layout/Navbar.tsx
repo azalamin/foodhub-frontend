@@ -37,10 +37,14 @@ interface MenuItem {
 /* MOCK AUTH (replace later with real auth) */
 /* ------------------------------------------------------------------ */
 
-const user = {
-	name: "Al Amin",
-	role: "CUSTOMER", // CUSTOMER | PROVIDER | ADMIN | null
-};
+// const user = {
+// 	name: "Al Amin",
+// 	role: "CUSTOMER", // CUSTOMER | PROVIDER | ADMIN | null
+// };
+// const user = {
+// 	name: "Al Amin",
+// 	role: "CUSTOMER", // CUSTOMER | PROVIDER | ADMIN | null
+// };
 
 const cartCount = 2;
 
@@ -114,7 +118,9 @@ export function Navbar() {
 					</Link>
 
 					{/* USER / AUTH */}
-					{user ? <UserMenu /> : <AuthButtons />}
+					{/* {user ? <UserMenu /> : <AuthButtons />} */}
+					{/* {user ? <UserMenu /> : } */}
+					<AuthButtons />
 
 					{/* MOBILE MENU */}
 					<MobileMenu menu={menu} pathname={pathname} />
@@ -159,7 +165,7 @@ function UserMenu() {
 					<Link href='/profile'>My Profile</Link>
 				</DropdownMenuItem>
 
-				{user.role === "CUSTOMER" && (
+				{/* {user.role === "CUSTOMER" && (
 					<DropdownMenuItem asChild>
 						<Link href='/orders'>My Orders</Link>
 					</DropdownMenuItem>
@@ -182,7 +188,7 @@ function UserMenu() {
 					</DropdownMenuItem>
 				)}
 
-				<hr className='my-1' />
+				<hr className='my-1' /> */}
 
 				<DropdownMenuItem className='text-red-500'>Logout</DropdownMenuItem>
 			</DropdownMenuContent>
