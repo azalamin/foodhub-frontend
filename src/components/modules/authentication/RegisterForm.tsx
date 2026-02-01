@@ -25,8 +25,8 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 
+import { upgradeToProviderAction } from "@/actions/user.action";
 import { registerSchema } from "@/schemas/register.schema";
-import { upgradeToProvider } from "@/service/user.service";
 import { FcGoogle } from "react-icons/fc";
 
 export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
@@ -53,7 +53,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
 				console.log(value);
 
 				if (value.role === "PROVIDER" && data?.user.id) {
-					await upgradeToProvider(data.user.id);
+					await upgradeToProviderAction(data.user.id);
 				}
 
 				if (error) {
