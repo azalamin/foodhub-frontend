@@ -50,8 +50,6 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
 					password: value.password,
 				});
 
-				console.log(value);
-
 				if (value.role === "PROVIDER" && data?.user.id) {
 					await upgradeToProviderAction(data.user.id);
 				}
