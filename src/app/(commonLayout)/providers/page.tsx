@@ -5,8 +5,6 @@ import { Provider } from "@/types";
 export default async function ProvidersPage() {
 	const { data, error } = await providerService.getPublicProviders();
 
-	console.log(data.data);
-
 	if (error) {
 		return (
 			<div className='container py-20 text-center text-muted-foreground'>
@@ -16,7 +14,7 @@ export default async function ProvidersPage() {
 	}
 
 	return (
-		<div className='container py-10 space-y-8'>
+		<div className='container py-10 space-y-8 mx-auto'>
 			{/* HEADER */}
 			<div className='max-w-2xl'>
 				<h1 className='text-3xl font-bold tracking-tight'>Discover Food Providers</h1>
@@ -26,11 +24,11 @@ export default async function ProvidersPage() {
 			</div>
 
 			{/* PROVIDERS GRID */}
-			{data.length === 0 ? (
+			{data.data.length === 0 ? (
 				<p className='text-muted-foreground'>No providers available right now.</p>
 			) : (
 				<div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-					{data.map((provider: Provider) => (
+					{data.data.map((provider: Provider) => (
 						<ProviderCard key={provider.id} provider={provider} />
 					))}
 				</div>

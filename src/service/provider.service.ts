@@ -18,4 +18,21 @@ export const providerService = {
 			return { data: [], error: { message: "Something went wrong" } };
 		}
 	},
+	getProviderWithMeals: async (id: string) => {
+		try {
+			const res = await fetch(`${env.API_URL}/api/providers/${id}`, {
+				cache: "no-store",
+			});
+
+			const data = await res.json();
+
+			if (!res.ok || !data.success) {
+				return { data: [], error: { message: "Failed" } };
+			}
+
+			return { data: data, error: null };
+		} catch {
+			return { data: [], error: { message: "Something went wrong" } };
+		}
+	},
 };

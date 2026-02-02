@@ -7,5 +7,5 @@ export type {
 } from "./order.types";
 
 export type { CartContextType, CartItem } from "./cart.types";
-export type { SearchParams } from "./meal.types";
+export type { DietaryType, Meal, SearchParams } from "./meal.types";
 export type { Provider } from "./provider.types";
