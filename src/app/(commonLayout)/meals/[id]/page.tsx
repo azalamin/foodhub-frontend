@@ -1,5 +1,6 @@
 import { AddToCart } from "@/components/modules/meals/add-to-cart";
 import { env } from "@/env";
+import { useCart } from "@/providers/CartContext";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 
@@ -21,6 +22,8 @@ export default async function MealDetailsPage({ params }: { params: Promise<{ id
 	const meal = await getMeal(id);
 
 	if (!meal) return notFound();
+
+	const { addToCart } = useCart();
 
 	return (
 		<div className='container mx-auto py-10'>

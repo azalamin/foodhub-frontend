@@ -31,7 +31,7 @@ export function AddToCart({ meal }: AddToCartProps) {
 			mealId: meal.id,
 			name: meal.name,
 			price: meal.price,
-			quantity,
+			quantity: 1,
 		});
 
 		localStorage.setItem("cart", JSON.stringify(cart));

@@ -23,6 +23,7 @@ import {
 	NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { useCart } from "@/providers/CartContext";
 
 /* ------------------------------------------------------------------ */
 /* TYPES */
@@ -44,13 +45,7 @@ interface NavbarProps {
 	user: UserType | null;
 }
 
-/* ------------------------------------------------------------------ */
-
 const cartCount = 2;
-
-/* ------------------------------------------------------------------ */
-/* NAVBAR */
-/* ------------------------------------------------------------------ */
 
 export function Navbar({ user }: NavbarProps) {
 	const pathname = usePathname();
@@ -61,6 +56,8 @@ export function Navbar({ user }: NavbarProps) {
 		{ title: "Meals", url: "/meals" },
 		{ title: "Providers", url: "/providers" },
 	];
+
+	const { totalItems } = useCart();
 
 	return (
 		<header className='sticky top-0 z-50 border-b bg-background/80 backdrop-blur'>
@@ -106,13 +103,14 @@ export function Navbar({ user }: NavbarProps) {
 					</Button>
 
 					{/* CART */}
-					<Link href='/cart' className='relative mr-1'>
+					<Link href='/cart' className='relative'>
 						<Button variant='ghost' size='icon'>
 							<ShoppingCart className='h-5 w-5' />
 						</Button>
-						{cartCount > 0 && (
+
+						{totalItems > 0 && (
 							<span className='absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground'>
-								{cartCount}
+								{totalItems}
 							</span>
 						)}
 					</Link>
