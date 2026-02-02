@@ -42,3 +42,31 @@ export interface OrderWithCustomer extends Order {
 		email: string;
 	};
 }
+
+export interface AdminOrderItem {
+	id: string;
+	mealName: string;
+	mealPrice: number;
+	quantity: number;
+}
+
+export interface AdminOrder {
+	id: string;
+	status: OrderStatus;
+	totalPrice: number;
+	deliveryAddress: string;
+	createdAt: string;
+
+	customer: {
+		id: string;
+		name: string;
+		email: string;
+	};
+
+	provider: {
+		id: string;
+		restaurantName: string;
+	};
+
+	items: OrderItem[];
+}

@@ -1,7 +1,7 @@
 export const runtime = "nodejs";
 
 import { env } from "@/env";
-import { CreateOrderPayload } from "@/types";
+import { AdminOrder, CreateOrderPayload } from "@/types";
 import { cookies } from "next/headers";
 
 export const orderService = {
@@ -35,7 +35,6 @@ export const orderService = {
 	},
 
 	createOrder: async (payload: CreateOrderPayload) => {
-		console.log({ payload });
 		const cookieStore = await cookies();
 
 		const res = await fetch(`${env.API_URL}/api/orders`, {
@@ -57,5 +56,22 @@ export const orderService = {
 		}
 
 		return data;
+	},
+
+	getAllOrders: async () => {
+		const cookieStore = await cookies();
+
+		const res = await fetch(`${env.API_URL}/api/admin/orders`, {
+			headers: {
+				Cookie: cookieStore.toString(),
+			},
+			cache: "no-store",
+		});
+
+		if (!res.ok) {
+			throw new Error("Failed to fetch orders");
+		}
+
+		return res.json() as Promise<{ success: boolean; data: AdminOrder[] }>;
 	},
 };

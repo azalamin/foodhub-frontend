@@ -1,4 +1,6 @@
 export type {
+	AdminOrder,
+	AdminOrderItem,
 	CreateOrderPayload,
 	Order,
 	OrderItem,
