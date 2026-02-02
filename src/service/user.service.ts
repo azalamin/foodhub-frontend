@@ -4,7 +4,7 @@ import { env } from "../env";
 const AUTH_URL = env.AUTH_URL;
 
 export const userService = {
-	getSession: async function () {
+	getSession: async () => {
 		try {
 			const cookiesStore = await cookies();
 			const res = await fetch(`${AUTH_URL}/get-session`, {

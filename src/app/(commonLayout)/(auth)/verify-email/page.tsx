@@ -1,13 +1,6 @@
-import { userService } from "@/service/user.service";
 import { MailCheck } from "lucide-react";
-import { redirect } from "next/navigation";
 
 export default async function VerifyEmailPage() {
-	const { data } = await userService.getSession();
-
-	if (data) {
-		redirect("/");
-	}
 	return (
 		<div className='space-y-6 text-center'>
 			<div className='flex justify-center'>

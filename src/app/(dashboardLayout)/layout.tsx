@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { userService } from "@/service/user.service";
 
 export default async function DashboardLayout({
