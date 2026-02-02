@@ -38,6 +38,16 @@ export const userService = {
 
 		const data = await res.json();
 
+		const result = await fetch(`${env.API_URL}/api/providers`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Origin: env.FRONTEND_URL,
+			},
+			credentials: "include",
+			body: JSON.stringify({ id: data.id }),
+		});
+
 		if (!res.ok) {
 			throw new Error(data.message || "Failed to upgrade role");
 		}
