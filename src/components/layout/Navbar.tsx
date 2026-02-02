@@ -137,7 +137,7 @@ function AuthButtons() {
 				<Link href='/login'>Login</Link>
 			</Button>
 			<Button asChild size='sm'>
-				<Link href='/register'>Sign up</Link>
+				<Link href='/register'>Register</Link>
 			</Button>
 		</div>
 	);
@@ -282,7 +282,7 @@ function MobileMenu({
 									<Link href='/login'>Login</Link>
 								</Button>
 								<Button asChild>
-									<Link href='/register'>Sign up</Link>
+									<Link href='/register'>Register</Link>
 								</Button>
 							</>
 						)}
