@@ -103,6 +103,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
 										<Input
 											id={field.name}
 											value={field.state.value}
+											placeholder='Your name'
 											onChange={e => field.handleChange(e.target.value)}
 										/>
 										{isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -124,6 +125,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
 											id={field.name}
 											type='email'
 											value={field.state.value}
+											placeholder='Your email'
 											onChange={e => field.handleChange(e.target.value)}
 										/>
 										{isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -145,6 +147,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
 											id={field.name}
 											type='password'
 											value={field.state.value}
+											placeholder='Your password'
 											onChange={e => field.handleChange(e.target.value)}
 										/>
 										{isInvalid && <FieldError errors={field.state.meta.errors} />}
