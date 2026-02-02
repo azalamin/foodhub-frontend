@@ -1,4 +1,7 @@
+export const runtime = "nodejs";
+
 import { env } from "@/env";
+import { CreateOrderPayload } from "@/types";
 import { cookies } from "next/headers";
 
 export const orderService = {
@@ -29,5 +32,30 @@ export const orderService = {
 		} catch (error) {
 			return { data: null, error: { message: "Something went wrong!" } };
 		}
+	},
+
+	createOrder: async (payload: CreateOrderPayload) => {
+		console.log({ payload });
+		const cookieStore = await cookies();
+
+		const res = await fetch(`${env.API_URL}/api/orders`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Cookie: cookieStore.toString(),
+			},
+			credentials: "include",
+
+			cache: "no-store",
+			body: JSON.stringify(payload),
+		});
+
+		const data = await res.json();
+
+		if (!res.ok) {
+			throw new Error(data.message || "Failed to place order");
+		}
+
+		return data;
 	},
 };

@@ -26,6 +26,15 @@ export interface Order {
 	updatedAt: string;
 }
 
+export interface CreateOrderPayload {
+	providerId: string;
+	deliveryAddress: string;
+	items: {
+		mealId: string;
+		quantity: number;
+	}[];
+}
+
 export interface OrderWithCustomer extends Order {
 	customer: {
 		id: string;

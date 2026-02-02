@@ -22,6 +22,7 @@ export function AddToCart({ meal }: { meal: any }) {
 			name: meal.name,
 			price: meal.price,
 			quantity,
+			providerId: undefined,
 		});
 
 		toast.success("Added to cart 🛒", {

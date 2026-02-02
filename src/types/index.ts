@@ -1,4 +1,5 @@
 export type {
+	CreateOrderPayload,
 	Order,
 	OrderItem,
 	OrderProvider,

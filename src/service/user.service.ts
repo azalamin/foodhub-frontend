@@ -21,16 +21,16 @@ export const userService = {
 
 			return { data: session, error: null };
 		} catch (err) {
-			console.error(err);
 			return { data: null, error: { message: "Something went wrong!" } };
 		}
 	},
+
 	upgradeToProvider: async (userId: string) => {
 		const res = await fetch(`${env.API_URL}/api/users/${userId}/role`, {
 			method: "PATCH",
 			headers: {
 				"Content-Type": "application/json",
-				origin: env.FRONTEND_URL,
+				Origin: env.FRONTEND_URL,
 			},
 			credentials: "include",
 			body: JSON.stringify({ role: "PROVIDER" }),
