@@ -1,3 +1,4 @@
+import { User } from "@/types/user.types";
 import { cookies } from "next/headers";
 import { env } from "../env";
 
@@ -23,6 +24,26 @@ export const userService = {
 		} catch (err) {
 			return { data: null, error: { message: "Something went wrong!" } };
 		}
+	},
+
+	getAllUsers: async () => {
+		const cookieStore = await cookies();
+
+		const res = await fetch(`${env.API_URL}/api/users/admin/users/`, {
+			method: "GET",
+			credentials: "include",
+			cache: "no-store",
+			headers: {
+				"Content-Type": "application/json",
+				Cookie: cookieStore.toString(),
+			},
+		});
+
+		if (!res.ok) {
+			throw new Error("Failed to fetch users");
+		}
+
+		return res.json() as Promise<{ success: boolean; data: User[] }>;
 	},
 
 	upgradeToProvider: async (userId: string) => {
