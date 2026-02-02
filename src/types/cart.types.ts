@@ -3,14 +3,14 @@ export type CartItem = {
 	name: string;
 	price: number;
 	quantity: number;
-	image?: string;
 };
 
-export type CartContextType = {
+export interface CartContextType {
 	items: CartItem[];
-	addToCart: (item: CartItem) => void;
-	removeFromCart: (mealId: string) => void;
-	clearCart: () => void;
 	totalItems: number;
 	totalPrice: number;
-};
+	addToCart: (item: CartItem) => void;
+	removeFromCart: (mealId: string) => void;
+	updateQuantity: (mealId: string, quantity: number) => void;
+	clearCart: () => void;
+}

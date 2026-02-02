@@ -1,69 +1,59 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { useCart } from "@/providers/CartContext";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
 
-interface AddToCartProps {
-	meal: {
-		id: string;
-		name: string;
-		price: number;
-		isAvailable: boolean;
-	};
-}
-
-export function AddToCart({ meal }: AddToCartProps) {
+export function AddToCart({ meal }: { meal: any }) {
 	const [quantity, setQuantity] = useState(1);
 	const router = useRouter();
+	const { addToCart } = useCart();
 
-	const addToCart = () => {
+	const handleAddToCart = () => {
 		if (!meal.isAvailable) {
-			toast.error("Meal is not available");
+			toast.error("Meal is not available ❌");
 			return;
 		}
 
-		// store in localStorage (frontend cart)
-		const cart = JSON.parse(localStorage.getItem("cart") || "[]");
-
-		cart.push({
+		addToCart({
 			mealId: meal.id,
 			name: meal.name,
 			price: meal.price,
-			quantity: 1,
+			quantity,
 		});
 
-		localStorage.setItem("cart", JSON.stringify(cart));
-
-		toast.success("Added to cart");
+		toast.success("Added to cart 🛒", {
+			description: `${meal.name} × ${quantity}`,
+		});
 	};
 
 	const buyNow = () => {
-		addToCart();
+		handleAddToCart();
 		router.push("/checkout");
 	};
 
 	return (
 		<div className='space-y-4'>
-			{/* QUANTITY */}
 			<div className='flex items-center gap-4'>
 				<Button variant='outline' onClick={() => setQuantity(q => Math.max(1, q - 1))}>
 					-
 				</Button>
+
 				<span className='font-medium'>{quantity}</span>
+
 				<Button variant='outline' onClick={() => setQuantity(q => q + 1)}>
 					+
 				</Button>
 			</div>
 
-			{/* ACTIONS */}
 			<div className='flex gap-3'>
-				<Button className='flex-1' onClick={addToCart} disabled={!meal.isAvailable}>
+				<Button onClick={handleAddToCart} disabled={!meal.isAvailable}>
 					Add to Cart
 				</Button>
 
-				<Button variant='outline' className='flex-1' onClick={buyNow} disabled={!meal.isAvailable}>
+				<Button variant='outline' onClick={buyNow} disabled={!meal.isAvailable}>
 					Buy Now
 				</Button>
 			</div>
