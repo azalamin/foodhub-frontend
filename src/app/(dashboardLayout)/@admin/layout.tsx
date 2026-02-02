@@ -1,3 +1,5 @@
+"use client";
+
 import { MobileSidebar } from "@/components/layout/MobileSidebar";
 import { Sidebar } from "@/components/layout/Sidebar";
 

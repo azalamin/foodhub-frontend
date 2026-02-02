@@ -27,6 +27,7 @@ import {
 
 import { upgradeToProviderAction } from "@/actions/user.action";
 import { registerSchema } from "@/schemas/register.schema";
+import { redirect } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 
 export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
@@ -60,6 +61,7 @@ export function RegisterForm({ ...props }: React.ComponentProps<typeof Card>) {
 				}
 
 				toast.success("Account created! Please check your email to verify.", { id: toastId });
+				redirect("/");
 			} catch {
 				toast.error("Something went wrong, please try again.", {
 					id: toastId,
