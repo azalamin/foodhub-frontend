@@ -3,6 +3,7 @@
 import { env } from "@/env";
 import { orderService } from "@/service/order.service";
 import { CreateOrderPayload, OrderStatus } from "@/types";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
 export async function getMyOrders() {
@@ -44,3 +45,9 @@ export async function updateOrderStatusAction(orderId: string, status: OrderStat
 
 	return data;
 }
+
+export const updateOrderStatusProviderAction = async (orderId: string, status: string) => {
+	const result = await orderService.updateOrderStatus(orderId, status);
+	revalidatePath("/provider/orders");
+	return result;
+};

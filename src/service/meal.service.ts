@@ -1,6 +1,7 @@
 import { env } from "@/env";
 import { buildQuery } from "@/lib/utils";
-import { SearchParams } from "@/types";
+import { Meal, SearchParams } from "@/types";
+import { cookies } from "next/headers";
 
 export const mealService = {
 	getAllMeals: async (searchParams: SearchParams) => {
@@ -25,5 +26,43 @@ export const mealService = {
 		} catch (error) {
 			return { data: null, error: { message: "Something went wrong!" } };
 		}
+	},
+
+	getProviderMeals: async () => {
+		const cookieStore = await cookies();
+		const res = await fetch(`${env.API_URL}/api/provider/meals`, {
+			headers: { Cookie: cookieStore.toString() },
+			cache: "no-store",
+		});
+		return res.json() as Promise<{ success: boolean; data: Meal[] }>;
+	},
+
+	createMeal: async (mealData: Partial<Meal>) => {
+		const cookieStore = await cookies();
+		const res = await fetch(`${env.API_URL}/api/provider/meals`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json", Cookie: cookieStore.toString() },
+			body: JSON.stringify(mealData),
+		});
+		return res.json();
+	},
+
+	updateMeal: async (mealId: string, mealData: { price?: number; isAvailable?: boolean }) => {
+		const cookieStore = await cookies();
+		const res = await fetch(`${env.API_URL}/api/provider/meals/${mealId}`, {
+			method: "PUT",
+			headers: { "Content-Type": "application/json", Cookie: cookieStore.toString() },
+			body: JSON.stringify(mealData),
+		});
+		return res.json();
+	},
+
+	deleteMeal: async (mealId: string) => {
+		const cookieStore = await cookies();
+		const res = await fetch(`${env.API_URL}/api/provider/meals/${mealId}`, {
+			method: "DELETE",
+			headers: { Cookie: cookieStore.toString() },
+		});
+		return res.json();
 	},
 };

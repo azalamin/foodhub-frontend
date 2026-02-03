@@ -74,4 +74,23 @@ export const orderService = {
 
 		return res.json() as Promise<{ success: boolean; data: AdminOrder[] }>;
 	},
+
+	getProviderOrders: async () => {
+		const cookieStore = await cookies();
+		const res = await fetch(`${env.API_URL}/api/provider/orders`, {
+			headers: { Cookie: cookieStore.toString() },
+			cache: "no-store",
+		});
+		return res.json();
+	},
+
+	updateOrderStatus: async (orderId: string, status: string) => {
+		const cookieStore = await cookies();
+		const res = await fetch(`${env.API_URL}/api/provider/orders/${orderId}/status`, {
+			method: "PATCH",
+			headers: { "Content-Type": "application/json", Cookie: cookieStore.toString() },
+			body: JSON.stringify({ status }),
+		});
+		return res.json();
+	},
 };

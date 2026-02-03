@@ -38,7 +38,8 @@ export function Sidebar({ role }: SidebarProps) {
 				{role === "PROVIDER" && (
 					<>
 						<SidebarLink href='/provider-dashboard/orders' label='Orders' />
-						<SidebarLink href='/provider-dashboard/meals' label='Meals' />
+						<SidebarLink href='/provider-dashboard/menu' label='Menu' />
+						<SidebarLink href='/provider-dashboard/profile' label='Profile' />
 					</>
 				)}
 
