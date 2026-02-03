@@ -14,7 +14,13 @@ const STATUS_FLOW: Record<OrderStatus, OrderStatus[]> = {
 	CANCELLED: [],
 };
 
-export function OrderActions({ order }: { order: AdminOrder }) {
+interface OrderActionsProps {
+	order: AdminOrder;
+	onStatusChange: (order: AdminOrder) => void;
+	onDelete: () => void;
+}
+
+export function OrderActions({ order }: OrderActionsProps) {
 	const [pending, startTransition] = useTransition();
 
 	const nextStatuses = STATUS_FLOW[order.status];

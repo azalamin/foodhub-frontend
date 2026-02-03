@@ -1,8 +1,8 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { UserActions } from "./user-actions";
 import { User } from "@/types/user.types";
+import { UserActions } from "./user-actions";
 
 interface Props {
 	users: User[];

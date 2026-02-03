@@ -24,7 +24,7 @@ export async function placeOrderAction(payload: CreateOrderPayload) {
 export async function updateOrderStatusAction(orderId: string, status: OrderStatus) {
 	const cookieStore = await cookies();
 
-	const res = await fetch(`${env.API_URL}/api/orders/${orderId}/status`, {
+	const res = await fetch(`${env.API_URL}/api/orders/${orderId}`, {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
@@ -32,6 +32,9 @@ export async function updateOrderStatusAction(orderId: string, status: OrderStat
 		},
 		body: JSON.stringify({ status }),
 	});
+
+	console.log(await res.json());
+	console.log({ orderId, status });
 
 	const data = await res.json();
 

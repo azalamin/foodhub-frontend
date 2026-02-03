@@ -47,7 +47,15 @@ export function AdminOrderTable({ orders }: Props) {
 							</td>
 
 							<td className='px-4 py-3 text-right'>
-								<OrderActions order={order} />
+								<OrderActions
+									order={order}
+									onStatusChange={function (order: AdminOrder): void {
+										throw new Error("Function not implemented.");
+									}}
+									onDelete={function (): void {
+										throw new Error("Function not implemented.");
+									}}
+								/>
 							</td>
 						</tr>
 					))}

@@ -10,5 +10,6 @@ export type {
 } from "./order.types";
 
 export type { CartContextType, CartItem } from "./cart.types";
+export type { Category } from "./category.types";
 export type { DietaryType, Meal, SearchParams } from "./meal.types";
 export type { Provider } from "./provider.types";
