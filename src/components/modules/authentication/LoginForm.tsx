@@ -1,11 +1,5 @@
 "use client";
 
-import { useForm } from "@tanstack/react-form";
-import Link from "next/link";
-import { toast } from "sonner";
-
-import { authClient } from "@/lib/auth-client";
-
 import { Button } from "@/components/ui/button";
 import {
 	Card,
@@ -15,13 +9,19 @@ import {
 	CardHeader,
 	CardTitle,
 } from "@/components/ui/card";
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-
+import { authClient } from "@/lib/auth-client";
 import { loginSchema } from "@/schemas/login.schema";
+import { useForm } from "@tanstack/react-form";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
+import { toast } from "sonner";
 
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
+	const router = useRouter();
+
 	const form = useForm({
 		defaultValues: {
 			email: "",
@@ -32,10 +32,9 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 		},
 		onSubmit: async ({ value }) => {
 			const toastId = toast.loading("Logging in...");
-			let success = false;
 
 			try {
-				const { error, data } = await authClient.signIn.email({
+				const { error } = await authClient.signIn.email({
 					email: value.email,
 					password: value.password,
 				});
@@ -46,13 +45,12 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 				}
 
 				toast.success("Logged in successfully!", { id: toastId });
-				success = true; // Mark as successful
-			} catch (err) {
-				toast.error("Something went wrong, please try again.", { id: toastId });
-			}
 
-			if (success) {
-				window.location.href = "/";
+				// SPA Navigation - No full page reload
+				router.push("/");
+				router.refresh();
+			} catch (err) {
+				toast.error("An unexpected error occurred.", { id: toastId });
 			}
 		},
 	});
@@ -60,15 +58,15 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 	const handleGoogleLogin = async () => {
 		await authClient.signIn.social({
 			provider: "google",
-			callbackURL: "http://localhost:3000",
+			callbackURL: "/", // Ensure this matches your local dev URL
 		});
 	};
 
 	return (
-		<Card {...props}>
+		<Card {...props} className='mx-auto max-w-sm'>
 			<CardHeader>
-				<CardTitle>Login</CardTitle>
-				<CardDescription>Enter your information below to login to your account</CardDescription>
+				<CardTitle className='text-2xl'>Login</CardTitle>
+				<CardDescription>Enter your email below to login to your account</CardDescription>
 			</CardHeader>
 
 			<CardContent>
@@ -79,65 +77,51 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 						form.handleSubmit();
 					}}
 				>
-					<FieldGroup>
-						{/* EMAIL */}
+					<FieldGroup className='space-y-4'>
 						<form.Field
 							name='email'
-							children={field => {
-								const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
-								return (
-									<Field data-invalid={isInvalid}>
-										<FieldLabel htmlFor={field.name}>Email</FieldLabel>
-										<Input
-											id={field.name}
-											type='email'
-											value={field.state.value}
-											onChange={e => field.handleChange(e.target.value)}
-											placeholder='Enter you email'
-										/>
-										{isInvalid && <FieldError errors={field.state.meta.errors} />}
-									</Field>
-								);
-							}}
+							children={field => (
+								<Field>
+									<FieldLabel>Email</FieldLabel>
+									<Input
+										type='email'
+										value={field.state.value}
+										onChange={e => field.handleChange(e.target.value)}
+										placeholder='m@example.com'
+									/>
+									<FieldError errors={field.state.meta.errors} />
+								</Field>
+							)}
 						/>
 
-						{/* PASSWORD */}
 						<form.Field
 							name='password'
-							children={field => {
-								const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
-
-								return (
-									<Field data-invalid={isInvalid}>
-										<FieldLabel htmlFor={field.name}>Password</FieldLabel>
-										<Input
-											id={field.name}
-											type='password'
-											value={field.state.value}
-											placeholder='Enter your password'
-											onChange={e => field.handleChange(e.target.value)}
-										/>
-										{isInvalid && <FieldError errors={field.state.meta.errors} />}
-									</Field>
-								);
-							}}
+							children={field => (
+								<Field>
+									<FieldLabel>Password</FieldLabel>
+									<Input
+										type='password'
+										value={field.state.value}
+										onChange={e => field.handleChange(e.target.value)}
+									/>
+									<FieldError errors={field.state.meta.errors} />
+								</Field>
+							)}
 						/>
 					</FieldGroup>
 				</form>
 			</CardContent>
 
-			<CardFooter className='flex flex-col gap-5'>
-				{/* LOGIN */}
+			<CardFooter className='flex flex-col gap-4'>
 				<Button
 					form='login-form'
 					type='submit'
 					className='w-full'
 					disabled={form.state.isSubmitting}
 				>
-					Login
+					{form.state.isSubmitting ? "Please wait..." : "Login"}
 				</Button>
 
-				{/* GOOGLE */}
 				<Button
 					onClick={handleGoogleLogin}
 					variant='outline'
@@ -148,12 +132,12 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 					Continue with Google
 				</Button>
 
-				<FieldDescription className='text-center'>
+				<div className='text-center text-sm'>
 					Don’t have an account?{" "}
 					<Link href='/register' className='text-primary hover:underline'>
 						Sign up
 					</Link>
-				</FieldDescription>
+				</div>
 			</CardFooter>
 		</Card>
 	);

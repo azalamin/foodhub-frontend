@@ -1,11 +1,12 @@
 "use client";
 
+import { authClient } from "@/lib/auth-client";
 import { Menu, Moon, ShoppingCart, Sun, User } from "lucide-react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
-import { cn, handleLogout } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 
 import { Accordion, AccordionItem } from "@/components/ui/accordion";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -23,11 +24,8 @@ import {
 	NavigationMenuList,
 } from "@/components/ui/navigation-menu";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import { useAuth } from "@/providers/AuthContext";
 import { useCart } from "@/providers/CartContext";
-
-/* ------------------------------------------------------------------ */
-/* TYPES */
-/* ------------------------------------------------------------------ */
 
 interface MenuItem {
 	title: string;
@@ -38,16 +36,21 @@ type UserRole = "CUSTOMER" | "PROVIDER" | "ADMIN";
 
 interface UserType {
 	name: string;
-	role: UserRole;
+	role: UserRole | string;
 }
 
 interface NavbarProps {
 	user: UserType | null;
 }
 
-export function Navbar({ user }: NavbarProps) {
+export function Navbar({ user: initialUser }: NavbarProps) {
 	const pathname = usePathname();
+	const router = useRouter();
 	const { theme, setTheme } = useTheme();
+	const { totalItems } = useCart();
+
+	const { data: session } = useAuth();
+	const currentUser = (session?.user as unknown as UserType) ?? initialUser;
 
 	const menu: MenuItem[] = [
 		{ title: "Home", url: "/" },
@@ -55,18 +58,25 @@ export function Navbar({ user }: NavbarProps) {
 		{ title: "Providers", url: "/providers" },
 	];
 
-	const { totalItems } = useCart();
+	const onLogout = async () => {
+		await authClient.signOut({
+			fetchOptions: {
+				onSuccess: () => {
+					router.push("/login");
+					router.refresh(); // Clears server cache
+				},
+			},
+		});
+	};
 
 	return (
 		<header className='sticky top-0 z-50 border-b bg-background/80 backdrop-blur'>
 			<div className='container mx-auto flex h-16 items-center justify-between'>
-				{/* LOGO */}
 				<Link href='/' className='flex items-center gap-2'>
 					<span className='text-2xl'>🍱</span>
 					<span className='text-lg font-bold tracking-tight'>FoodHub</span>
 				</Link>
 
-				{/* DESKTOP NAV */}
 				<nav className='hidden lg:flex'>
 					<NavigationMenu>
 						<NavigationMenuList>
@@ -89,9 +99,7 @@ export function Navbar({ user }: NavbarProps) {
 					</NavigationMenu>
 				</nav>
 
-				{/* RIGHT ACTIONS */}
 				<div className='flex items-center gap-2'>
-					{/* THEME TOGGLE */}
 					<Button
 						variant='ghost'
 						size='icon'
@@ -100,12 +108,10 @@ export function Navbar({ user }: NavbarProps) {
 						{theme === "dark" ? <Sun className='h-5 w-5' /> : <Moon className='h-5 w-5' />}
 					</Button>
 
-					{/* CART */}
 					<Link href='/cart' className='relative'>
 						<Button variant='ghost' size='icon'>
 							<ShoppingCart className='h-5 w-5' />
 						</Button>
-
 						{totalItems > 0 && (
 							<span className='absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground'>
 								{totalItems}
@@ -113,20 +119,14 @@ export function Navbar({ user }: NavbarProps) {
 						)}
 					</Link>
 
-					{/* USER / AUTH */}
-					{user ? <UserMenu user={user} /> : <AuthButtons />}
+					{currentUser ? <UserMenu user={currentUser} onLogout={onLogout} /> : <AuthButtons />}
 
-					{/* MOBILE MENU */}
-					<MobileMenu menu={menu} pathname={pathname} user={user} />
+					<MobileMenu menu={menu} pathname={pathname} user={currentUser} onLogout={onLogout} />
 				</div>
 			</div>
 		</header>
 	);
 }
-
-/* ------------------------------------------------------------------ */
-/* AUTH BUTTONS */
-/* ------------------------------------------------------------------ */
 
 function AuthButtons() {
 	return (
@@ -141,11 +141,7 @@ function AuthButtons() {
 	);
 }
 
-/* ------------------------------------------------------------------ */
-/* USER MENU (DESKTOP) */
-/* ------------------------------------------------------------------ */
-
-function UserMenu({ user }: { user: UserType }) {
+function UserMenu({ user, onLogout }: { user: UserType; onLogout: () => void }) {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
@@ -180,15 +176,8 @@ function UserMenu({ user }: { user: UserType }) {
 					</>
 				)}
 
-				{user.role === "ADMIN" && (
-					<DropdownMenuItem asChild>
-						<Link href='/admin-dashboard'>Admin Dashboard</Link>
-					</DropdownMenuItem>
-				)}
-
 				<hr className='my-1' />
-
-				<DropdownMenuItem className='text-red-500' onClick={() => handleLogout()}>
+				<DropdownMenuItem className='text-red-500' onClick={onLogout}>
 					Logout
 				</DropdownMenuItem>
 			</DropdownMenuContent>
@@ -196,18 +185,16 @@ function UserMenu({ user }: { user: UserType }) {
 	);
 }
 
-/* ------------------------------------------------------------------ */
-/* MOBILE MENU */
-/* ------------------------------------------------------------------ */
-
 function MobileMenu({
 	menu,
 	pathname,
 	user,
+	onLogout,
 }: {
 	menu: MenuItem[];
 	pathname: string;
 	user: UserType | null;
+	onLogout: () => void;
 }) {
 	return (
 		<Sheet>
@@ -226,51 +213,28 @@ function MobileMenu({
 
 				<div className='mt-6 flex flex-col gap-6 px-3'>
 					<Accordion type='single' collapsible>
-						{menu.map(item => {
-							const isActive = pathname === item.url;
-
-							return (
-								<AccordionItem key={item.title} value={item.title}>
-									<Link
-										href={item.url}
-										className={cn(
-											"block rounded-md px-3 py-2 font-medium transition-colors mb-3",
-											isActive ? "bg-primary text-primary-foreground" : "hover:bg-muted",
-										)}
-									>
-										{item.title}
-									</Link>
-								</AccordionItem>
-							);
-						})}
+						{menu.map(item => (
+							<AccordionItem key={item.title} value={item.title} className='border-none'>
+								<Link
+									href={item.url}
+									className={cn(
+										"block rounded-md px-3 py-2 font-medium transition-colors",
+										pathname === item.url ? "bg-primary text-primary-foreground" : "hover:bg-muted",
+									)}
+								>
+									{item.title}
+								</Link>
+							</AccordionItem>
+						))}
 					</Accordion>
 
 					<div className='flex flex-col gap-3'>
 						{user ? (
 							<>
-								<Link href='/dashboard/profile' className='font-medium'>
+								<Link href='/dashboard/profile' className='font-medium px-3'>
 									My Profile
 								</Link>
-
-								{user.role === "CUSTOMER" && (
-									<Link href='/dashboard/orders' className='font-medium'>
-										My Orders
-									</Link>
-								)}
-
-								{user.role === "PROVIDER" && (
-									<Link href='/provider-dashboard' className='font-medium'>
-										Provider Dashboard
-									</Link>
-								)}
-
-								{user.role === "ADMIN" && (
-									<Link href='/admin-dashboard' className='font-medium'>
-										Admin Dashboard
-									</Link>
-								)}
-
-								<Button variant='outline' className='text-red-500' onClick={() => handleLogout()}>
+								<Button variant='outline' className='text-red-500 justify-start' onClick={onLogout}>
 									Logout
 								</Button>
 							</>
