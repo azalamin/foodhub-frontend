@@ -177,7 +177,7 @@ function UserMenu({ user }: { user: UserType }) {
 							<Link href='/provider-dashboard'>Dashboard</Link>
 						</DropdownMenuItem>
 						<DropdownMenuItem asChild>
-							<Link href='/provider/menu'>My Menu</Link>
+							<Link href='/provider-dashboard/menu'>My Menu</Link>
 						</DropdownMenuItem>
 					</>
 				)}
