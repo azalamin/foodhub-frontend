@@ -74,14 +74,25 @@ export const mealService = {
 		return result;
 	},
 
-	updateMeal: async (mealId: string, mealData: { price?: number; isAvailable?: boolean }) => {
+	updateMeal: async (mealId: string, mealData: any) => {
 		const cookieStore = await cookies();
+
 		const res = await fetch(`${env.API_URL}/api/provider/meals/${mealId}`, {
-			method: "PUT",
-			headers: { "Content-Type": "application/json", Cookie: cookieStore.toString() },
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json",
+				Cookie: cookieStore.toString(),
+			},
 			body: JSON.stringify(mealData),
 		});
-		return res.json();
+
+		const result = await res.json();
+
+		if (!res.ok) {
+			throw new Error(result.message || "Failed to update meal");
+		}
+
+		return result;
 	},
 
 	deleteMeal: async (mealId: string) => {

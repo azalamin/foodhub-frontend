@@ -14,9 +14,13 @@ export const createMealAction = async (data: any) => {
 };
 
 export const updateMealAction = async (id: string, data: any) => {
-	const result = await mealService.updateMeal(id, data);
-	revalidatePath("/provider/menu");
-	return result;
+	try {
+		const result = await mealService.updateMeal(id, data);
+		revalidatePath("/provider/menu");
+		return result;
+	} catch (error: any) {
+		throw new Error(error.message);
+	}
 };
 
 export const deleteMealAction = async (id: string) => {
