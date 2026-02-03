@@ -45,8 +45,6 @@ interface NavbarProps {
 	user: UserType | null;
 }
 
-const cartCount = 2;
-
 export function Navbar({ user }: NavbarProps) {
 	const pathname = usePathname();
 	const { theme, setTheme } = useTheme();

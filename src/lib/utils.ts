@@ -1,6 +1,5 @@
 import { SearchParams } from "@/types";
 import { clsx, type ClassValue } from "clsx";
-import { redirect } from "next/navigation";
 import { twMerge } from "tailwind-merge";
 import { authClient } from "./auth-client";
 
@@ -9,13 +8,8 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const handleLogout = async () => {
-	await authClient.signOut({
-		fetchOptions: {
-			onSuccess: () => {
-				redirect("/");
-			},
-		},
-	});
+	await authClient.signOut();
+	window.location.href = "/";
 };
 
 export function buildQuery(params: SearchParams) {

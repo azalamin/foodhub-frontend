@@ -19,7 +19,6 @@ import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel } from "@/c
 import { Input } from "@/components/ui/input";
 
 import { loginSchema } from "@/schemas/login.schema";
-import { redirect } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 
 export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
@@ -33,6 +32,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 		},
 		onSubmit: async ({ value }) => {
 			const toastId = toast.loading("Logging in...");
+			let success = false;
 
 			try {
 				const { error, data } = await authClient.signIn.email({
@@ -46,12 +46,13 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 				}
 
 				toast.success("Logged in successfully!", { id: toastId });
-
-				if (data) {
-					redirect("/");
-				}
-			} catch {
+				success = true; // Mark as successful
+			} catch (err) {
 				toast.error("Something went wrong, please try again.", { id: toastId });
+			}
+
+			if (success) {
+				window.location.href = "/";
 			}
 		},
 	});
