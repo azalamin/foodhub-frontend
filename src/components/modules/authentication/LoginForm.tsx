@@ -58,7 +58,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 	const handleGoogleLogin = async () => {
 		await authClient.signIn.social({
 			provider: "google",
-			callbackURL: "/", // Ensure this matches your local dev URL
+			callbackURL: "http://localhost:3000", // Ensure this matches your local dev URL
 		});
 	};
 
