@@ -16,10 +16,9 @@ export default async function MealsProviderPage() {
 				<p className='text-muted-foreground'>Add new meals and manage your existing menu items</p>
 			</div>
 
-			{/* Pass categories data to the form */}
 			<MealForm categories={categoriesRes.data} />
 
-			<MealTable meals={mealsRes.data} />
+			<MealTable meals={mealsRes.data} categories={categoriesRes.data} />
 		</div>
 	);
 }

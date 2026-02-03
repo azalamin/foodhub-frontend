@@ -1,19 +1,33 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Edit, Trash2, Eye, EyeOff } from "lucide-react";
 import { deleteMealAction, updateMealAction } from "@/actions/meal.action";
 import { Meal } from "@/types/meal.types";
+import { Category } from "@/types";
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog";
+import { EditMealForm } from "./edit-meal-form";
 
-export function MealActions({ meal }: { meal: Meal }) {
+interface MealActionsProps {
+	meal: Meal;
+	categories: Category[];
+}
+
+export function MealActions({ meal, categories }: MealActionsProps) {
 	const [isPending, startTransition] = useTransition();
+	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
 
 	const handleToggleVisibility = () => {
 		startTransition(async () => {
 			try {
-				// Endpoint: Update meal - price and isAvailable
 				await updateMealAction(meal.id, {
 					isAvailable: !meal.isAvailable,
 				});
@@ -29,7 +43,6 @@ export function MealActions({ meal }: { meal: Meal }) {
 
 		startTransition(async () => {
 			try {
-				// Endpoint: Delete meal
 				await deleteMealAction(meal.id);
 				toast.success("Meal deleted successfully");
 			} catch (err: any) {
@@ -50,9 +63,25 @@ export function MealActions({ meal }: { meal: Meal }) {
 				{meal.isAvailable ? <EyeOff className='h-4 w-4' /> : <Eye className='h-4 w-4' />}
 			</Button>
 
-			<Button size='sm' variant='outline' disabled={isPending}>
-				<Edit className='h-4 w-4' />
-			</Button>
+			{/* 2. EDIT DIALOG IMPLEMENTATION */}
+			<Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+				<DialogTrigger asChild>
+					<Button size='sm' variant='outline' disabled={isPending}>
+						<Edit className='h-4 w-4' />
+					</Button>
+				</DialogTrigger>
+				<DialogContent className='sm:max-w-[600px]'>
+					<DialogHeader>
+						<DialogTitle>Edit Meal: {meal.name}</DialogTitle>
+					</DialogHeader>
+					{/* The Edit Form component */}
+					<EditMealForm
+						meal={meal}
+						categories={categories}
+						onSuccess={() => setIsEditDialogOpen(false)}
+					/>
+				</DialogContent>
+			</Dialog>
 
 			<Button size='sm' variant='destructive' onClick={handleDelete} disabled={isPending}>
 				<Trash2 className='h-4 w-4' />
