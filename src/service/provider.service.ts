@@ -54,10 +54,20 @@ export const providerService = {
 	}) => {
 		const cookieStore = await cookies();
 		const res = await fetch(`${env.API_URL}/api/provider/me`, {
-			method: "PUT",
-			headers: { "Content-Type": "application/json", Cookie: cookieStore.toString() },
+			method: "PATCH",
+			headers: {
+				"Content-Type": "application/json",
+				Cookie: cookieStore.toString(),
+			},
 			body: JSON.stringify(profileData),
 		});
-		return res.json();
+
+		const result = await res.json();
+
+		if (!res.ok) {
+			throw new Error(result.message || "Failed to update profile");
+		}
+
+		return result;
 	},
 };
