@@ -1,12 +1,11 @@
-import { MealForm } from "@/components/modules/provider/meal-form";
-import { mealService } from "@/service/meal.service";
-import { categoryService } from "@/service/category.service";
 import { MealTable } from "@/components/modules/meals/meal-table";
+import { MealForm } from "@/components/modules/provider/meal-form";
+import { categoryService } from "@/service/category.service";
+import { mealService } from "@/service/meal.service";
 
 export default async function MealsProviderPage() {
-	// Fetch both meals and categories in parallel
 	const [mealsRes, categoriesRes] = await Promise.all([
-		mealService.getProviderMeals(),
+		mealService.getCurrentProviderMeals(),
 		categoryService.getAll(),
 	]);
 

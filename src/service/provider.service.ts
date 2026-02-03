@@ -37,7 +37,6 @@ export const providerService = {
 		}
 	},
 
-	// GET http://localhost:4000/api/provider/me
 	getMyProfile: async () => {
 		const cookieStore = await cookies();
 		const res = await fetch(`${env.API_URL}/api/provider/me`, {

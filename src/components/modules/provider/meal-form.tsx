@@ -13,7 +13,6 @@ import {
 	SelectValue,
 } from "@/components/ui/select";
 import { Category } from "@/types";
-
 import { useForm } from "@tanstack/react-form";
 import { toast } from "sonner";
 
@@ -23,12 +22,13 @@ export function MealForm({ categories }: { categories: Category[] }) {
 			name: "",
 			description: "",
 			price: 0,
+			imageUrl: "",
 			dietaryType: "NONE",
 			categoryId: "",
 			isAvailable: true,
 		},
 		onSubmit: async ({ value }) => {
-			const toastId = toast.loading("Adding meal...");
+			const toastId = toast.loading("Adding meal to menu...");
 			try {
 				await createMealAction(value);
 				toast.success("Meal added successfully!", { id: toastId });
@@ -48,6 +48,7 @@ export function MealForm({ categories }: { categories: Category[] }) {
 			}}
 		>
 			<FieldGroup className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+				{/* NAME */}
 				<form.Field
 					name='name'
 					children={field => (
@@ -63,11 +64,12 @@ export function MealForm({ categories }: { categories: Category[] }) {
 					)}
 				/>
 
+				{/* PRICE */}
 				<form.Field
 					name='price'
 					children={field => (
 						<Field>
-							<FieldLabel>Price</FieldLabel>
+							<FieldLabel>Price (BDT)</FieldLabel>
 							<Input
 								type='number'
 								value={field.state.value}
@@ -79,6 +81,7 @@ export function MealForm({ categories }: { categories: Category[] }) {
 					)}
 				/>
 
+				{/* DIETARY TYPE */}
 				<form.Field
 					name='dietaryType'
 					children={field => (
@@ -100,6 +103,7 @@ export function MealForm({ categories }: { categories: Category[] }) {
 					)}
 				/>
 
+				{/* CATEGORY */}
 				<form.Field
 					name='categoryId'
 					children={field => (
@@ -123,6 +127,7 @@ export function MealForm({ categories }: { categories: Category[] }) {
 				/>
 			</FieldGroup>
 
+			{/* DESCRIPTION */}
 			<form.Field
 				name='description'
 				children={field => (
@@ -137,6 +142,22 @@ export function MealForm({ categories }: { categories: Category[] }) {
 				)}
 			/>
 
+			{/* IMAGE URL */}
+			<form.Field
+				name='imageUrl'
+				children={field => (
+					<Field>
+						<FieldLabel>Meal Image URL</FieldLabel>
+						<Input
+							value={field.state.value}
+							onChange={e => field.handleChange(e.target.value)}
+							placeholder='https://example.com/image.jpg'
+						/>
+					</Field>
+				)}
+			/>
+
+			{/* AVAILABILITY */}
 			<form.Field
 				name='isAvailable'
 				children={field => (
