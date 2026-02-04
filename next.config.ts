@@ -1,3 +1,4 @@
+import { env } from "@/env";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
@@ -18,6 +19,14 @@ const nextConfig: NextConfig = {
 				hostname: "example.com",
 			},
 		],
+	},
+	async rewrites() {
+		return [
+			{
+				source: "/api/auth/:path*",
+				destination: `${env.NEXT_PUBLIC_AUTH_URL}/api/auth/:path*`,
+			},
+		];
 	},
 };
 
