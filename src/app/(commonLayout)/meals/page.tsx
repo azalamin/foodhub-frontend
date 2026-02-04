@@ -3,16 +3,22 @@ import { MealsGrid } from "@/components/modules/meals/meals-grid";
 import { Badge } from "@/components/ui/badge";
 import { Suspense } from "react";
 
-export default function MealsPage({
+export default async function MealsPage({
 	searchParams,
 }: {
-	searchParams: {
+	searchParams: Promise<{
 		search?: string;
 		categoryId?: string;
 		dietaryType?: string;
+		sort?: string;
+		isAvailable?: string;
 		page?: string;
-	};
+	}>;
 }) {
+	const filters = await searchParams;
+
+	const filterKey = JSON.stringify(filters);
+
 	return (
 		<div className='container mx-auto py-12 space-y-10 px-4'>
 			{/* Header Section */}
@@ -37,13 +43,14 @@ export default function MealsPage({
 
 			{/* Meals Display Area */}
 			<Suspense
+				key={filterKey}
 				fallback={
-					<div className='h-96 flex items-center justify-center text-muted-foreground'>
+					<div className='h-96 flex items-center justify-center text-muted-foreground font-bold italic animate-pulse'>
 						Loading deliciousness...
 					</div>
 				}
 			>
-				<MealsGrid searchParams={searchParams} />
+				<MealsGrid searchParams={filters} />
 			</Suspense>
 		</div>
 	);

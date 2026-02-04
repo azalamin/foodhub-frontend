@@ -3,19 +3,19 @@ import { MealCard } from "./meal-card";
 import { MealsPagination } from "./meals-pagination";
 
 export async function MealsGrid({ searchParams }: { searchParams: any }) {
-	// Resolve the promise searchParams in Next 15 if needed, or use them directly
-	const resolvedParams = await searchParams;
+	const params = searchParams;
 
 	const query = {
-		search: resolvedParams.search || "",
-		dietaryType: resolvedParams.dietaryType || "",
-		isAvailable: resolvedParams.isAvailable || "",
-		limit: resolvedParams.limit || 32, // Loads 32 initially (nice grid for 4-cols)
-		page: resolvedParams.page || 1,
+		search: params.search || "",
+		dietaryType: params.dietaryType || "",
+		isAvailable: params.isAvailable || "",
+		sort: params.sort || "", // Pass the string "price_asc" or "price_desc"
+		page: params.page || 1,
 	};
 
 	const { data } = await mealService.getAllMeals(query);
-	const mealsData = data.data;
+
+	const mealsData = data?.data;
 
 	if (!mealsData || mealsData.length === 0) {
 		return (

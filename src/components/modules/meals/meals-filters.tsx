@@ -18,10 +18,8 @@ export function MealsFilters() {
 	const searchParams = useSearchParams();
 	const [isPending, startTransition] = useTransition();
 
-	// Local state for the search input to keep it responsive
 	const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
 
-	// Function to update URL params
 	const handleFilterChange = (key: string, value: string) => {
 		const params = new URLSearchParams(searchParams.toString());
 
@@ -31,21 +29,19 @@ export function MealsFilters() {
 			params.delete(key);
 		}
 
-		params.set("page", "1"); // Always reset to page 1
+		params.set("page", "1");
 
-		// startTransition tells Next.js to update the URL without "blocking" the UI
 		startTransition(() => {
 			router.push(`/meals?${params.toString()}`, { scroll: false });
 		});
 	};
 
-	// Debounce effect for search
 	useEffect(() => {
 		const delayDebounceFn = setTimeout(() => {
 			if (searchTerm !== (searchParams.get("search") || "")) {
 				handleFilterChange("search", searchTerm);
 			}
-		}, 400); // Wait 400ms after typing stops
+		}, 400);
 
 		return () => clearTimeout(delayDebounceFn);
 	}, [searchTerm]);
@@ -78,6 +74,21 @@ export function MealsFilters() {
 
 				{/* Filter Actions */}
 				<div className='flex w-full md:w-auto items-center gap-2 border-t md:border-t-0 md:border-l pt-2 md:pt-0 md:pl-2'>
+					{/* --- PRICE SORT (NEW) --- */}
+					<Select
+						value={searchParams.get("sort") || "all"}
+						onValueChange={val => handleFilterChange("sort", val)}
+					>
+						<SelectTrigger className='h-10 w-full md:w-[150px] border-none bg-transparent font-bold hover:bg-muted/50 rounded-xl'>
+							<SelectValue placeholder='Sort Price' />
+						</SelectTrigger>
+						<SelectContent className='rounded-xl font-medium'>
+							<SelectItem value='all'>Newest First</SelectItem>
+							<SelectItem value='price_asc'>Price: Low to High</SelectItem>
+							<SelectItem value='price_desc'>Price: High to Low</SelectItem>
+						</SelectContent>
+					</Select>
+
 					{/* Dietary Type */}
 					<Select
 						value={searchParams.get("dietaryType") || "all"}
@@ -94,7 +105,7 @@ export function MealsFilters() {
 						</SelectContent>
 					</Select>
 
-					{/* Available Only Toggle */}
+					{/* Available Toggle */}
 					<button
 						onClick={() =>
 							handleFilterChange(
@@ -103,10 +114,10 @@ export function MealsFilters() {
 							)
 						}
 						className={cn(
-							"px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap",
+							"px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap border",
 							searchParams.get("isAvailable") === "true"
-								? "bg-primary/10 text-primary border border-primary/20"
-								: "text-muted-foreground hover:bg-muted",
+								? "bg-primary/10 text-primary border-primary/20"
+								: "text-muted-foreground border-transparent hover:bg-muted",
 						)}
 					>
 						In Stock

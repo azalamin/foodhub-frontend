@@ -1,29 +1,33 @@
 import { env } from "@/env";
-import { buildQuery } from "@/lib/utils";
-import { Meal, SearchParams } from "@/types";
+import { Meal } from "@/types";
 import { cookies } from "next/headers";
 import { providerService } from "./provider.service";
 import { userService } from "./user.service";
 
 export const mealService = {
-	getAllMeals: async (searchParams: SearchParams) => {
+	getAllMeals: async (searchParams: any) => {
 		try {
-			const query = buildQuery(searchParams);
+			const queryParams = new URLSearchParams();
 
-			const res = await fetch(`${env.API_URL}/api/meals?${query}`, {
+			if (searchParams.search) queryParams.set("search", searchParams.search);
+			if (searchParams.dietaryType) queryParams.set("dietaryPreference", searchParams.dietaryType);
+			if (searchParams.isAvailable) queryParams.set("isAvailable", searchParams.isAvailable);
+			if (searchParams.page) queryParams.set("page", searchParams.page);
+
+			if (searchParams.sort && searchParams.sort !== "all") {
+				const [field, order] = searchParams.sort.split("_");
+				queryParams.set("sortBy", field);
+				queryParams.set("sortOrder", order);
+			} else {
+				queryParams.set("sortBy", "createdAt");
+				queryParams.set("sortOrder", "desc");
+			}
+
+			const res = await fetch(`${env.API_URL}/api/meals?${queryParams.toString()}`, {
 				cache: "no-store",
 			});
 
-			if (!res.ok) {
-				throw new Error("Failed to fetch meals");
-			}
-
 			const data = await res.json();
-
-			if (!data.success) {
-				return { data: null, error: { message: data.message ?? "Failed" } };
-			}
-
 			return { data: data.data, error: null };
 		} catch (error) {
 			return { data: null, error: { message: "Something went wrong!" } };
