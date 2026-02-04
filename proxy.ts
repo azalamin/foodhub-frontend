@@ -5,6 +5,19 @@ import { NextRequest, NextResponse } from "next/server";
 export async function proxy(request: NextRequest) {
 	const pathname = request.nextUrl.pathname;
 
+	// Skip middleware for verify-email route
+	if (pathname.startsWith("/verify-email")) {
+		return NextResponse.next();
+	}
+
+	// Check for session token in cookies
+	const sessionToken = request.cookies.get("better-auth.session_token");
+
+	//* User is not authenticated at all
+	if (!sessionToken) {
+		return NextResponse.redirect(new URL("/login", request.url));
+	}
+
 	let isAuthenticated: boolean = false;
 	let isAdmin: boolean = false;
 	let isProvider: boolean = false;
@@ -49,12 +62,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-	matcher: [
-		"/dashboard",
-		"/dashboard/:path*",
-		"/provider-dashboard",
-		"/provider-dashboard/:path*",
-		"/admin-dashboard",
-		"/admin-dashboard/:path*",
-	],
+	matcher: ["/dashboard/:path*", "/provider-dashboard/:path*", "/admin-dashboard/:path*"],
 };
