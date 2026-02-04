@@ -93,4 +93,28 @@ export const orderService = {
 		});
 		return res.json();
 	},
+
+	getSingleOrder: async (orderId: string) => {
+		try {
+			const cookieStore = await cookies();
+			const res = await fetch(`${env.API_URL}/api/orders/${orderId}`, {
+				cache: "no-store",
+				headers: {
+					"Content-Type": "application/json",
+					// Pass the cookies so the Express authMiddleware works
+					Cookie: cookieStore.toString(),
+				},
+			});
+
+			const result = await res.json();
+
+			if (!res.ok) {
+				throw new Error(result.message || "Failed to fetch order");
+			}
+
+			return result;
+		} catch (error: any) {
+			return { success: false, message: error.message };
+		}
+	},
 };

@@ -51,3 +51,28 @@ export const updateOrderStatusProviderAction = async (orderId: string, status: s
 	revalidatePath("/provider/orders");
 	return result;
 };
+
+export async function getOrderById(orderId: string) {
+	try {
+		const result = await orderService.getSingleOrder(orderId);
+
+		if (!result || !result.success) {
+			return {
+				success: false,
+				message: result?.message || "Order not found",
+				data: null,
+			};
+		}
+
+		return {
+			success: true,
+			data: result.data,
+		};
+	} catch (error: any) {
+		return {
+			success: false,
+			message: "Something went wrong while loading your order.",
+			data: null,
+		};
+	}
+}
