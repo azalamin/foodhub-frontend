@@ -12,7 +12,7 @@ export function Hero() {
 			<div className='absolute left-1/2 top-0 -z-10 h-[600px] w-full -translate-x-1/2 opacity-20 [background:radial-gradient(circle_at_center,_var(--primary)_0%,_transparent_70%)]' />
 			<div className='absolute inset-0 -z-20 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]' />
 
-			<div className='container mx-auto grid min-h-[70vh] grid-cols-1 items-center gap-12 pb-20 lg:grid-cols-2'>
+			<div className='container mx-auto grid min-h-[70vh] grid-cols-1 items-center gap-12 pb-20 lg:grid-cols-2 px-4'>
 				{/* LEFT: CONTENT */}
 				<div className='flex flex-col gap-8 text-center lg:text-left'>
 					<div className='flex justify-center lg:justify-start'>
