@@ -28,7 +28,7 @@ const getCategoryIcon = (slug: string) => {
 
 export function CategoriesSection({ categories }: { categories: Category[] }) {
 	// If backend is empty, we fallback to a slice or your mock data
-	const displayCategories = categories?.length > 0 ? categories : [];
+	const displayCategories = categories?.length > 0 ? categories.slice(0, 12) : [];
 
 	return (
 		<section className='relative py-24 overflow-hidden'>
