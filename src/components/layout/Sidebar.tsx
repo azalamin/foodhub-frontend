@@ -98,9 +98,9 @@ export function Sidebar({ role }: SidebarProps) {
 							<>
 								<SidebarLink
 									icon={<LayoutDashboard size={18} />}
-									href='/provider-dashboard'
+									href='/provider-dashboard/overview'
 									label='Overview'
-									active={pathname === "/provider-dashboard"}
+									active={pathname === "/provider-dashboard/overview"}
 								/>
 								<SidebarLink
 									icon={<ShoppingBag size={18} />}
