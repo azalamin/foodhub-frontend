@@ -3,8 +3,8 @@ import { Button } from "@/components/ui/button";
 import { orderService } from "@/service/order.service";
 import { Filter, ShoppingBasket } from "lucide-react";
 
-export default async function ProviderOrdersPage() {
-	const { data } = await orderService.getProviderIncomingOrders();
+export default async function ProviderAllOrdersPage() {
+	const { data } = await orderService.getProviderAllOrders();
 
 	return (
 		<div className='space-y-10 pb-10'>

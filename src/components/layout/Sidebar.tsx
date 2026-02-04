@@ -105,8 +105,14 @@ export function Sidebar({ role }: SidebarProps) {
 								<SidebarLink
 									icon={<ShoppingBag size={18} />}
 									href='/provider-dashboard/orders'
-									label='Orders'
+									label='New Orders'
 									active={pathname === "/provider-dashboard/orders"}
+								/>
+								<SidebarLink
+									icon={<ShoppingBag size={18} />}
+									href='/provider-dashboard/all-orders'
+									label='All Orders'
+									active={pathname === "/provider-dashboard/all-orders"}
 								/>
 								<SidebarLink
 									icon={<UtensilsCrossed size={18} />}
