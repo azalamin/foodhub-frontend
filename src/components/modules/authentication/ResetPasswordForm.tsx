@@ -1,12 +1,12 @@
 "use client";
+import { useForm } from "@tanstack/react-form";
+import { Mail, ArrowLeft, Loader2, SendHorizontal } from "lucide-react";
+import Link from "next/link";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authClient } from "@/lib/auth-client";
-import { useForm } from "@tanstack/react-form";
-import { ArrowLeft, Loader2, Mail, SendHorizontal } from "lucide-react";
-import Link from "next/link";
-import { toast } from "sonner";
 
 export default function ForgotPasswordForm() {
 	const form = useForm({
