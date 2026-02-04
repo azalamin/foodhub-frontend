@@ -148,11 +148,20 @@ export function Sidebar({ role }: SidebarProps) {
 						Settings
 					</p>
 					<div className='space-y-1'>
-						<SidebarLink
-							icon={<Settings size={18} />}
-							href={role === "PROVIDER" ? "/provider-dashboard/profile" : "/dashboard/profile"}
-							label='General Settings'
-						/>
+						{(() => {
+							// Determine the correct settings path based on role
+							const settingsPath =
+								role === "PROVIDER" ? "/provider-dashboard/profile" : "/dashboard/profile";
+
+							return (
+								<SidebarLink
+									icon={<Settings size={18} />}
+									href={settingsPath}
+									label='General Settings'
+									active={pathname === settingsPath}
+								/>
+							);
+						})()}
 					</div>
 				</div>
 			</nav>
