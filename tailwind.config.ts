@@ -11,6 +11,7 @@ const config: Config = {
 			// ADD THIS SECTION BELOW
 			animation: {
 				"bounce-slow": "bounce-slow 3s infinite",
+				"loading-bar": "loading-bar 1.5s infinite linear",
 			},
 			keyframes: {
 				"bounce-slow": {
@@ -22,6 +23,10 @@ const config: Config = {
 						transform: "translateY(0)",
 						animationTimingFunction: "cubic-bezier(0, 0, 0.2, 1)",
 					},
+				},
+				"loading-bar": {
+					"0%": { transform: "translateX(-100%)" },
+					"100%": { transform: "translateX(100%)" },
 				},
 			},
 			// END OF SECTION

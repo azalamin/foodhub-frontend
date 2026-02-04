@@ -1,3 +1,4 @@
+import Loading from "@/app/loading";
 import ForgotPasswordForm from "@/components/modules/authentication/ForgotPasswordForm";
 import { MailCheck, UtensilsCrossed } from "lucide-react";
 import Link from "next/link";
@@ -34,7 +35,9 @@ export default function ForgotPasswordPage() {
 
 						<Suspense
 							fallback={
-								<div className='font-black animate-pulse text-primary italic'>Loading...</div>
+								<div className='font-black animate-pulse text-primary italic'>
+									<Loading />
+								</div>
 							}
 						>
 							<ForgotPasswordForm />
