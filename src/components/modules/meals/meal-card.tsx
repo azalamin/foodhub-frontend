@@ -7,7 +7,6 @@ import Image from "next/image";
 import Link from "next/link";
 
 export function MealCard({ meal }: { meal: any }) {
-	console.log(meal.averageRating);
 	const displayRating = meal.averageRating ? Number(meal.averageRating).toFixed(1) : "0.0";
 	const totalReviews = meal._count?.reviews || 0;
 
