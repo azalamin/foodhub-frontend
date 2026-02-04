@@ -149,7 +149,6 @@ export function Sidebar({ role }: SidebarProps) {
 					</p>
 					<div className='space-y-1'>
 						{(() => {
-							// Determine the correct settings path based on role
 							const settingsPath =
 								role === "PROVIDER" ? "/provider-dashboard/profile" : "/dashboard/profile";
 
