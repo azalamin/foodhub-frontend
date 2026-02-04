@@ -2,16 +2,19 @@
 
 import { env } from "@/env";
 import { userService } from "@/service/user.service";
+import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 
 export async function upgradeToProviderAction(userId: string) {
-	return await userService.upgradeToProvider(userId);
+	const result = await userService.upgradeToProvider(userId);
+	revalidatePath("/admin-dashboard/users");
+	return result;
 }
 
 export async function updateUserStatusAction(userId: string, status: "ACTIVE" | "SUSPENDED") {
-	const cookieStore = cookies();
+	const cookieStore = await cookies();
 
-	const res = await fetch(`${env.API_URL}/api/users/${userId}/status`, {
+	const res = await fetch(`${env.API_URL}/api/users/admin/users/${userId}/status`, {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
@@ -26,11 +29,13 @@ export async function updateUserStatusAction(userId: string, status: "ACTIVE" | 
 		throw new Error(data.message || "Failed to update status");
 	}
 
+	revalidatePath("/admin-dashboard/users");
+
 	return data;
 }
 
 export async function adminUpgradeToProviderAction(userId: string) {
-	const cookieStore = cookies();
+	const cookieStore = await cookies();
 
 	const res = await fetch(`${env.API_URL}/api/users/${userId}/role`, {
 		method: "PATCH",
@@ -46,6 +51,8 @@ export async function adminUpgradeToProviderAction(userId: string) {
 	if (!res.ok) {
 		throw new Error(data.message || "Failed to upgrade role");
 	}
+
+	revalidatePath("/admin-dashboard/users");
 
 	return data;
 }

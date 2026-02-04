@@ -51,7 +51,7 @@ export function RegisterForm() {
 				}
 
 				toast.success("Account created!", { id: toastId });
-
+				router.refresh();
 				router.push(`/verify-email?email=${encodeURIComponent(value.email)}`);
 			} catch {
 				toast.error("Error occurred. Try again.", { id: toastId });
