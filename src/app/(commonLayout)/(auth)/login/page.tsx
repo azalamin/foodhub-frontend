@@ -47,7 +47,7 @@ export default async function LoginPage() {
 							</div>
 							<h2 className='text-4xl font-black leading-tight italic uppercase'>
 								Best Flavors <br />
-								<span className='text-primary'>For You.</span>
+								<span className='text-green-500'>For You.</span>
 							</h2>
 						</div>
 					</div>
