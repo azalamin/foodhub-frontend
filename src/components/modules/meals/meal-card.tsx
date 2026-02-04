@@ -7,6 +7,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 export function MealCard({ meal }: { meal: any }) {
+	console.log(meal.averageRating);
+	const displayRating = meal.averageRating ? Number(meal.averageRating).toFixed(1) : "0.0";
+	const totalReviews = meal._count?.reviews || 0;
+
 	return (
 		<Link
 			href={`/meals/${meal.id}`}
@@ -21,10 +25,10 @@ export function MealCard({ meal }: { meal: any }) {
 					className='object-cover transition-transform duration-700 group-hover:scale-110'
 				/>
 
-				{/* Dietary Badge */}
+				{/* Dietary Badge - Back to White/Slate */}
 				<div className='absolute top-4 left-4'>
 					<Badge className='bg-white/90 backdrop-blur-md text-slate-900 border-none font-bold text-[10px] uppercase px-3 py-1'>
-						{meal.dietaryType === "NONE" ? "Chef Special" : meal.dietaryType}
+						{meal.dietaryType === "NONE" || !meal.dietaryType ? "Chef Special" : meal.dietaryType}
 					</Badge>
 				</div>
 
@@ -49,10 +53,12 @@ export function MealCard({ meal }: { meal: any }) {
 					{meal.description}
 				</p>
 
+				{/* Rating & Clock Section - Restored Colors */}
 				<div className='flex items-center gap-4 text-[11px] font-bold text-muted-foreground/70'>
 					<div className='flex items-center gap-1'>
 						<Star className='h-3 w-3 fill-yellow-500 text-yellow-500' />
-						4.5
+						<span className='text-foreground'>{displayRating}</span>
+						<span className='text-[10px] opacity-60'>({totalReviews})</span>
 					</div>
 					<div className='flex items-center gap-1 text-primary'>
 						<Clock className='h-3 w-3' />
@@ -60,6 +66,7 @@ export function MealCard({ meal }: { meal: any }) {
 					</div>
 				</div>
 
+				{/* Footer Section - Restored Borders and Primary Button */}
 				<div className='flex items-center justify-between mt-auto pt-4 border-t border-muted/50'>
 					<div className='flex flex-col'>
 						<span className='text-[10px] text-muted-foreground uppercase font-bold tracking-wider'>
