@@ -2,13 +2,13 @@ import { ProviderOrderTable } from "@/components/modules/orders/order-table";
 import { Button } from "@/components/ui/button";
 import { orderService } from "@/service/order.service";
 import { Filter, ShoppingBasket } from "lucide-react";
+import { Suspense } from "react";
+import Loading from "../../loading"; // Path to your existing loader
 
-export default async function ProviderOrdersPage() {
-	const { data } = await orderService.getProviderIncomingOrders();
-
+export default function ProviderOrdersPage() {
 	return (
 		<div className='space-y-10 pb-10'>
-			{/* --- HEADER --- */}
+			{/* --- HEADER (Renders Instantly) --- */}
 			<div className='flex flex-col md:flex-row md:items-center justify-between gap-6'>
 				<div className='space-y-1'>
 					<div className='flex items-center gap-2 text-emerald-600 mb-1'>
@@ -31,7 +31,16 @@ export default async function ProviderOrdersPage() {
 				</Button>
 			</div>
 
-			<ProviderOrderTable orders={data} />
+			{/* --- TABLE AREA (Streams in after data fetch) --- */}
+			<Suspense fallback={<Loading />}>
+				<IncomingOrdersContainer />
+			</Suspense>
 		</div>
 	);
+}
+
+// Dedicated Data Fetcher
+async function IncomingOrdersContainer() {
+	const { data } = await orderService.getProviderIncomingOrders();
+	return <ProviderOrderTable orders={data} />;
 }

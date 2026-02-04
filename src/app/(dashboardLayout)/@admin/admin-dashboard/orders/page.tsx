@@ -1,14 +1,13 @@
 import { AdminOrderTable } from "@/components/modules/admin/order-table";
 import { orderService } from "@/service/order.service";
 import { Activity, ShieldCheck } from "lucide-react";
+import { Suspense } from "react";
+import Loading from "../../loading"; // Path to your admin loading component
 
-export default async function AdminOrdersPage() {
-	const { data } = await orderService.getAllOrders();
-	const orders = data || [];
-
+export default function AdminOrdersPage() {
 	return (
 		<div className='space-y-10 pb-12'>
-			{/* --- GLOBAL COMMAND HEADER --- */}
+			{/* --- GLOBAL COMMAND HEADER (Renders Instantly) --- */}
 			<div className='flex flex-col md:flex-row md:items-end justify-between gap-6 border-b-2 border-muted pb-8'>
 				<div className='space-y-2'>
 					<div className='flex items-center gap-2 text-emerald-600'>
@@ -24,21 +23,37 @@ export default async function AdminOrdersPage() {
 						Monitor marketplace transactions and logistics flow.
 					</p>
 				</div>
+			</div>
 
-				<div className='bg-emerald-500/10 px-6 py-3 rounded-[2rem] border-2 border-emerald-500/20 flex items-center gap-4'>
-					<Activity className='text-emerald-600' size={20} />
-					<div className='flex flex-col'>
-						<span className='text-[10px] font-black uppercase text-muted-foreground leading-none'>
-							Traffic
-						</span>
-						<span className='text-sm font-black uppercase italic text-emerald-700 leading-tight'>
-							{orders.length} Total Transactions
-						</span>
-					</div>
+			{/* --- DATA FETCHING AREA (Wrapped in Suspense) --- */}
+			<Suspense fallback={<Loading />}>
+				<AdminOrdersContainer />
+			</Suspense>
+		</div>
+	);
+}
+
+// Dedicated Data Fetcher for Global Orders
+async function AdminOrdersContainer() {
+	const { data } = await orderService.getAllOrders();
+	const orders = data || [];
+
+	return (
+		<>
+			{/* Traffic Badge (Streams in with the data) */}
+			<div className='absolute top-24 right-8 hidden xl:flex bg-emerald-500/10 px-6 py-3 rounded-[2rem] border-2 border-emerald-500/20 items-center gap-4'>
+				<Activity className='text-emerald-600' size={20} />
+				<div className='flex flex-col'>
+					<span className='text-[10px] font-black uppercase text-muted-foreground leading-none'>
+						Traffic
+					</span>
+					<span className='text-sm font-black uppercase italic text-emerald-700 leading-tight'>
+						{orders.length} Total Transactions
+					</span>
 				</div>
 			</div>
 
 			<AdminOrderTable orders={orders} />
-		</div>
+		</>
 	);
 }

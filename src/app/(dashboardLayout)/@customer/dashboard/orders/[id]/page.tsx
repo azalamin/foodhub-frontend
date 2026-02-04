@@ -6,34 +6,58 @@ import { format } from "date-fns";
 import { ChevronLeft, CreditCard, MapPin, Receipt, Store } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
+import Loading from "../../../loading"; // Path to your loading component
 
 export default async function OrderDetailsPage({ params }: { params: Promise<{ id: string }> }) {
 	const { id } = await params;
-	const { data: order } = await getOrderById(id);
-
-	if (!order) return notFound();
 
 	return (
 		<div className='max-w-4xl mx-auto py-10 px-4 space-y-10'>
-			{/* Header */}
+			{/* Header (Renders Instantly) */}
 			<div className='flex items-center justify-between'>
 				<Button variant='ghost' asChild className='rounded-full text-muted-foreground'>
 					<Link href='/dashboard/orders'>
 						<ChevronLeft size={16} className='mr-2' /> Back to Orders
 					</Link>
 				</Button>
+				{/* We use a generic label since we don't have the date yet */}
 				<p className='text-xs font-bold text-muted-foreground uppercase tracking-widest'>
-					Ordered {format(new Date(order.createdAt), "PPP")}
+					Order Tracking
 				</p>
 			</div>
 
-			{/* LIVE STEPPER - The Star Component */}
+			{/* --- DATA FETCHING AREA (Streams in) --- */}
+			<Suspense fallback={<Loading />}>
+				<OrderContentContainer id={id} />
+			</Suspense>
+		</div>
+	);
+}
+
+// Separate component for fetching and conditional logic
+async function OrderContentContainer({ id }: { id: string }) {
+	const { data: order } = await getOrderById(id);
+
+	if (!order) return notFound();
+
+	return (
+		<>
+			{/* Live Stepper Section */}
 			<div className='bg-card border-2 border-muted p-10 rounded-[3rem] shadow-xl'>
+				<div className='flex justify-between items-center mb-6'>
+					<p className='text-xs font-bold text-muted-foreground uppercase tracking-widest'>
+						Reference: #{order.id.slice(-6).toUpperCase()}
+					</p>
+					<p className='text-xs font-bold text-muted-foreground uppercase tracking-widest'>
+						{format(new Date(order.createdAt), "PPP")}
+					</p>
+				</div>
 				<OrderStepper currentStatus={order.status} />
 			</div>
 
 			<div className='grid grid-cols-1 lg:grid-cols-12 gap-10'>
-				{/* LEFT: Order Summary (7 cols) */}
+				{/* LEFT: Order Summary */}
 				<div className='lg:col-span-7 space-y-6'>
 					<div className='bg-card border-2 border-muted p-8 rounded-[2.5rem] space-y-6'>
 						<div className='flex items-center gap-3'>
@@ -48,7 +72,6 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
 										<div className='h-10 w-10 rounded-xl bg-muted flex items-center justify-center font-bold text-sm'>
 											{item.quantity}x
 										</div>
-										{/* Use item.meal.name based on your Prisma include */}
 										<p className='font-bold'>{item.meal?.name || "Delicious Meal"}</p>
 									</div>
 									<p className='font-mono font-bold'>৳{item.price * item.quantity}</p>
@@ -77,9 +100,8 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
 					</div>
 				</div>
 
-				{/* RIGHT: Logistics (5 cols) */}
+				{/* RIGHT: Logistics */}
 				<div className='lg:col-span-5 space-y-6'>
-					{/* Delivery Address */}
 					<div className='bg-muted/30 border-2 border-muted p-6 rounded-[2rem] space-y-3'>
 						<div className='flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-muted-foreground'>
 							<MapPin size={14} className='text-primary' /> Delivery To
@@ -87,7 +109,6 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
 						<p className='text-sm font-bold leading-relaxed'>{order.deliveryAddress}</p>
 					</div>
 
-					{/* Provider Info */}
 					<div className='bg-primary/5 border-2 border-primary/10 p-6 rounded-[2rem] space-y-4'>
 						<div className='flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-primary'>
 							<Store size={14} /> From Kitchen
@@ -105,7 +126,6 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
 						</Button>
 					</div>
 
-					{/* Payment Info */}
 					<div className='flex items-center gap-3 px-6 py-4 bg-muted/20 rounded-2xl'>
 						<CreditCard size={18} className='text-muted-foreground' />
 						<div>
@@ -117,6 +137,6 @@ export default async function OrderDetailsPage({ params }: { params: Promise<{ i
 					</div>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 }
