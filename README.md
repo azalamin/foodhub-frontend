@@ -2,6 +2,8 @@
 
 ### Next-Gen Multi-Role Food Marketplace
 
+## [Explanation Video](https://drive.google.com/file/d/1-n7CXgJ05I44VifH7hKICdp587Y7-ANc/view?usp=sharing)
+
 <p align="center">
   <a href="https://foodhubbd.vercel.app/">
     <img src="https://img.shields.io/badge/🌐_Live_Demo-FoodHub-22c55e?style=for-the-badge" />
