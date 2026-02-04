@@ -43,6 +43,28 @@ export async function updateOrderStatusAction(orderId: string, status: OrderStat
 	return data;
 }
 
+export async function cancelOrderByAdminAction(orderId: string, status: OrderStatus) {
+	const cookieStore = await cookies();
+
+	const res = await fetch(`${env.API_URL}/api/admin/orders/${orderId}/cancel`, {
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+			Cookie: cookieStore.toString(),
+		},
+	});
+
+	const data = await res.json();
+
+	if (!res.ok) {
+		throw new Error(data.message || "Failed to cancel order status");
+	}
+
+	revalidatePath("/admin-dashboard/orders");
+
+	return data;
+}
+
 export const updateOrderStatusProviderAction = async (orderId: string, status: string) => {
 	const result = await orderService.updateOrderStatus(orderId, status);
 	revalidatePath("/provider/orders");
