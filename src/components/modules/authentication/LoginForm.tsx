@@ -1,25 +1,19 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardFooter,
-	CardHeader,
-	CardTitle,
-} from "@/components/ui/card";
-import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { authClient } from "@/lib/auth-client";
-import { loginSchema } from "@/schemas/login.schema";
-import { useForm } from "@tanstack/react-form";
+import { AlertCircle, ArrowRight, Loader2, Lock, Mail } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 
-export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { authClient } from "@/lib/auth-client";
+import { loginSchema } from "@/schemas/login.schema";
+import { useForm } from "@tanstack/react-form";
+
+export function LoginForm() {
 	const router = useRouter();
 
 	const form = useForm({
@@ -31,7 +25,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 			onSubmit: loginSchema,
 		},
 		onSubmit: async ({ value }) => {
-			const toastId = toast.loading("Logging in...");
+			const toastId = toast.loading("Verifying your identity...");
 
 			try {
 				const { error } = await authClient.signIn.email({
@@ -44,9 +38,7 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 					return;
 				}
 
-				toast.success("Logged in successfully!", { id: toastId });
-
-				// SPA Navigation - No full page reload
+				toast.success("Welcome back!", { id: toastId });
 				router.push("/");
 				router.refresh();
 			} catch (err) {
@@ -58,87 +50,139 @@ export function LoginForm({ ...props }: React.ComponentProps<typeof Card>) {
 	const handleGoogleLogin = async () => {
 		await authClient.signIn.social({
 			provider: "google",
-			callbackURL: "http://localhost:3000", // Ensure this matches your local dev URL
+			callbackURL: window.location.origin,
 		});
 	};
 
 	return (
-		<Card {...props} className='mx-auto max-w-sm'>
-			<CardHeader>
-				<CardTitle className='text-2xl'>Login</CardTitle>
-				<CardDescription>Enter your email below to login to your account</CardDescription>
-			</CardHeader>
-
-			<CardContent>
-				<form
-					id='login-form'
-					onSubmit={e => {
-						e.preventDefault();
-						form.handleSubmit();
-					}}
-				>
-					<FieldGroup className='space-y-4'>
-						<form.Field
-							name='email'
-							children={field => (
-								<Field>
-									<FieldLabel>Email</FieldLabel>
-									<Input
-										type='email'
-										value={field.state.value}
-										onChange={e => field.handleChange(e.target.value)}
-										placeholder='m@example.com'
-									/>
-									<FieldError errors={field.state.meta.errors} />
-								</Field>
+		<div className='space-y-6'>
+			<form
+				onSubmit={e => {
+					e.preventDefault();
+					e.stopPropagation();
+					form.handleSubmit();
+				}}
+				className='space-y-5'
+			>
+				{/* EMAIL FIELD */}
+				<form.Field
+					name='email'
+					children={field => (
+						<div className='space-y-2'>
+							<Label className='ml-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground'>
+								Email Address
+							</Label>
+							<div className='relative'>
+								<Mail
+									className='absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground'
+									size={18}
+								/>
+								<Input
+									type='email'
+									placeholder='name@example.com'
+									className='h-14 pl-12 rounded-2xl border-2 border-muted bg-muted/20 focus-visible:ring-primary focus:bg-background transition-all font-bold'
+									value={field.state.value}
+									onBlur={field.handleBlur}
+									onChange={e => field.handleChange(e.target.value)}
+								/>
+							</div>
+							{field.state.meta.errors.length > 0 && (
+								<p className='text-[10px] font-bold text-red-500 ml-2 uppercase italic flex items-center gap-1'>
+									<AlertCircle size={10} />
+									{field.state.meta.errors[0]?.toString()}
+								</p>
 							)}
-						/>
+						</div>
+					)}
+				/>
 
-						<form.Field
-							name='password'
-							children={field => (
-								<Field>
-									<FieldLabel>Password</FieldLabel>
-									<Input
-										type='password'
-										value={field.state.value}
-										onChange={e => field.handleChange(e.target.value)}
-									/>
-									<FieldError errors={field.state.meta.errors} />
-								</Field>
+				{/* PASSWORD FIELD */}
+				<form.Field
+					name='password'
+					children={field => (
+						<div className='space-y-2'>
+							<div className='flex items-center justify-between px-2'>
+								<Label className='text-[10px] font-black uppercase tracking-widest text-muted-foreground'>
+									Password
+								</Label>
+								<Button
+									variant='link'
+									size='sm'
+									asChild
+									className='h-auto p-0 text-[10px] font-black text-primary uppercase'
+								>
+									<Link href='/forgot-password'>Forgot?</Link>
+								</Button>
+							</div>
+							<div className='relative'>
+								<Lock
+									className='absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground'
+									size={18}
+								/>
+								<Input
+									type='password'
+									placeholder='••••••••'
+									className='h-14 pl-12 rounded-2xl border-2 border-muted bg-muted/20 focus-visible:ring-primary focus:bg-background transition-all font-bold'
+									value={field.state.value}
+									onBlur={field.handleBlur}
+									onChange={e => field.handleChange(e.target.value)}
+								/>
+							</div>
+							{field.state.meta.errors.length > 0 && (
+								<p className='text-[10px] font-bold text-red-500 ml-2 uppercase italic flex items-center gap-1'>
+									<AlertCircle size={10} />
+									{field.state.meta.errors[0]?.toString()}
+								</p>
 							)}
-						/>
-					</FieldGroup>
-				</form>
-			</CardContent>
+						</div>
+					)}
+				/>
 
-			<CardFooter className='flex flex-col gap-4'>
-				<Button
-					form='login-form'
-					type='submit'
-					className='w-full'
-					disabled={form.state.isSubmitting}
-				>
-					{form.state.isSubmitting ? "Please wait..." : "Login"}
-				</Button>
+				<form.Subscribe
+					selector={state => [state.canSubmit, state.isSubmitting]}
+					children={([canSubmit, isSubmitting]) => (
+						<Button
+							type='submit'
+							className='w-full h-14 rounded-2xl font-black text-lg gap-2 shadow-xl shadow-primary/20 transition-all active:scale-95'
+							disabled={!canSubmit || isSubmitting}
+						>
+							{isSubmitting ? (
+								<Loader2 className='animate-spin' />
+							) : (
+								<>
+									Log In <ArrowRight size={20} />
+								</>
+							)}
+						</Button>
+					)}
+				/>
+			</form>
 
-				<Button
-					onClick={handleGoogleLogin}
-					variant='outline'
-					type='button'
-					className='w-full flex items-center gap-2'
-				>
-					<FcGoogle className='h-5 w-5' />
-					Continue with Google
-				</Button>
-
-				<div className='text-center text-sm'>
-					Don’t have an account?{" "}
-					<Link href='/register' className='text-primary hover:underline'>
-						Sign up
-					</Link>
+			<div className='relative'>
+				<div className='absolute inset-0 flex items-center'>
+					<span className='w-full border-t border-muted' />
 				</div>
-			</CardFooter>
-		</Card>
+				<div className='relative flex justify-center text-[10px] font-black uppercase tracking-widest text-muted-foreground'>
+					<span className='bg-background px-3'>Or continue with</span>
+				</div>
+			</div>
+
+			<Button
+				onClick={handleGoogleLogin}
+				variant='outline'
+				type='button'
+				className='w-full h-14 rounded-2xl border-2 font-black gap-3 hover:bg-muted transition-all active:scale-95'
+			>
+				<FcGoogle className='h-6 w-6' />
+				Google Account
+			</Button>
+
+			<p className='text-center text-sm font-bold text-muted-foreground'>
+				New here?{" "}
+				<Link href='/register' className='text-primary hover:underline italic font-black'>
+					Create an account
+				</Link>
+			</p>
+		</div>
 	);
 }
