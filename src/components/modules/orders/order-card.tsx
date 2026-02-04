@@ -2,8 +2,9 @@
 
 import { Order } from "@/types";
 import { format } from "date-fns";
-import { Calendar, ChevronRight, Receipt, Utensils } from "lucide-react";
+import { Calendar, ChevronRight, Receipt, Star, Utensils } from "lucide-react";
 import Link from "next/link";
+import { ReviewModal } from "../review/review-modal";
 import { OrderStatusBadge } from "./order-status-badge";
 
 export function OrderCard({ order }: { order: Order }) {
@@ -30,12 +31,19 @@ export function OrderCard({ order }: { order: Order }) {
 					</div>
 				</div>
 
-				<div className='flex items-center self-start'>
+				<div className='flex items-center self-start gap-3'>
+					{/* SHOW RATING IF REVIEW EXISTS */}
+					{order.review && (
+						<div className='flex items-center gap-1 bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-full border border-emerald-500/20'>
+							<Star size={12} className='fill-emerald-600' />
+							<span className='text-[10px] font-black'>{order.review.rating}</span>
+						</div>
+					)}
 					<OrderStatusBadge status={order.status} />
 				</div>
 			</div>
 
-			{/* Items Summary - Clean Bento Style */}
+			{/* Items Summary */}
 			<div className='rounded-2xl bg-muted/30 p-4 mb-6 border border-muted/50'>
 				<div className='grid gap-2'>
 					{order.items.map(item => (
@@ -57,13 +65,27 @@ export function OrderCard({ order }: { order: Order }) {
 					<p className='text-2xl font-black text-foreground font-mono'>৳{order.totalPrice}</p>
 				</div>
 
-				<Link
-					href={`/dashboard/orders/${order.id}`}
-					className='group/btn inline-flex items-center gap-2 rounded-xl bg-background border-2 px-5 py-2.5 text-sm font-black transition-all hover:bg-primary hover:border-primary hover:text-white shadow-sm'
-				>
-					Track Order
-					<ChevronRight size={16} className='transition-transform group-hover/btn:translate-x-1' />
-				</Link>
+				<div className='flex items-center gap-3'>
+					{/* SHOW REVIEW BUTTON ONLY IF DELIVERED AND NO REVIEW YET */}
+					{order.status === "DELIVERED" && !order.review && (
+						<ReviewModal
+							orderId={order.id}
+							mealId={order.items[0]?.mealId} // Assuming the first item for the review link
+							mealName={order.items[0]?.mealName}
+						/>
+					)}
+
+					<Link
+						href={`/dashboard/orders/${order.id}`}
+						className='group/btn inline-flex items-center gap-2 rounded-xl bg-background border-2 px-5 py-2.5 text-sm font-black transition-all hover:bg-primary hover:border-primary hover:text-white shadow-sm'
+					>
+						Track
+						<ChevronRight
+							size={16}
+							className='transition-transform group-hover/btn:translate-x-1'
+						/>
+					</Link>
+				</div>
 			</div>
 		</div>
 	);

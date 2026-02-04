@@ -11,6 +11,7 @@ export interface OrderProvider {
 	restaurantName: string;
 }
 export interface Order {
+	review: any;
 	id: string;
 	status: OrderStatus;
 	totalPrice: number;
