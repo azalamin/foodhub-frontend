@@ -203,17 +203,21 @@ function UserMenu({ user, onLogout }: { user: any; onLogout: () => void }) {
 
 				{(user.role === "PROVIDER" || user.role === "ADMIN") && (
 					<>
-						<DropdownMenuItem asChild className='rounded-lg cursor-pointer'>
-							<Link href='/provider-dashboard/profile' className='flex items-center gap-2 w-full'>
-								<Settings className='h-4 w-4' /> My Profile
-							</Link>
-						</DropdownMenuItem>
+						{user.role === "PROVIDER" && (
+							<DropdownMenuItem asChild className='rounded-lg cursor-pointer'>
+								<Link href='/provider-dashboard/profile' className='flex items-center gap-2 w-full'>
+									<Settings className='h-4 w-4' /> My Profile
+								</Link>
+							</DropdownMenuItem>
+						)}
 						<DropdownMenuItem
 							asChild
 							className='rounded-lg cursor-pointer bg-primary/5 text-primary font-medium hover:bg-primary/10'
 						>
 							<Link
-								href={user.role === "PROVIDER" ? "/provider-dashboard" : "/admin-dashboard"}
+								href={
+									user.role === "PROVIDER" ? "/provider-dashboard/overview" : "/admin-dashboard"
+								}
 								className='flex items-center gap-2 w-full'
 							>
 								<LayoutDashboard className='h-4 w-4' /> Dashboard
