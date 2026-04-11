@@ -24,7 +24,7 @@ export default function CheckoutPage() {
 	const handleGoogleLogin = async () => {
 		await authClient.signIn.social({
 			provider: "google",
-			callbackURL: window.location.origin + "/checkout",
+			callbackURL: `${window.location.origin}/checkout`,
 		});
 	};
 
