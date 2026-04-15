@@ -1,4 +1,6 @@
 export type OrderStatus = "PLACED" | "PREPARING" | "READY" | "DELIVERED" | "CANCELLED";
+export type PaymentStatus = "PENDING" | "PAID" | "FAILED" | "REFUNDED";
+export type PaymentMethod = "COD" | "CARD";
 export interface OrderItem {
 	id: string;
 	mealId: string;
@@ -16,6 +18,9 @@ export interface Order {
 	status: OrderStatus;
 	totalPrice: number;
 	deliveryAddress: string;
+	paymentStatus: PaymentStatus;
+	paymentMethod: PaymentMethod;
+	stripePaymentIntentId?: string;
 
 	customerId: string;
 	providerId: string;

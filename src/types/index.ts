@@ -7,6 +7,8 @@ export type {
 	OrderProvider,
 	OrderStatus,
 	OrderWithCustomer,
+	PaymentMethod,
+	PaymentStatus,
 } from "./order.types";
 
 export type { CartContextType, CartItem } from "./cart.types";
