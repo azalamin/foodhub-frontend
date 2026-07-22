@@ -37,7 +37,7 @@ export const mealService = {
 	getProviderMeals: async () => {
 		const cookieStore = await cookies();
 		const res = await fetch(`${env.API_URL}/api/provider/meals`, {
-			headers: { Cookie: cookieStore.toString() },
+			headers: { Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ") },
 			cache: "no-store",
 		});
 		return res.json() as Promise<{ success: boolean; data: Meal[] }>;
@@ -64,7 +64,7 @@ export const mealService = {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				Cookie: cookieStore.toString(),
+				Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 			},
 			body: JSON.stringify(payload),
 		});
@@ -85,7 +85,7 @@ export const mealService = {
 			method: "PATCH",
 			headers: {
 				"Content-Type": "application/json",
-				Cookie: cookieStore.toString(),
+				Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 			},
 			body: JSON.stringify(mealData),
 		});
@@ -103,7 +103,7 @@ export const mealService = {
 		const cookieStore = await cookies();
 		const res = await fetch(`${env.API_URL}/api/provider/meals/${mealId}`, {
 			method: "DELETE",
-			headers: { Cookie: cookieStore.toString() },
+			headers: { Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ") },
 		});
 		return res.json();
 	},
@@ -116,7 +116,7 @@ export const mealService = {
 
 		const profileRes = await fetch(`${env.API_URL}/api/provider/me`, {
 			headers: {
-				Cookie: (await cookies()).toString(),
+				Cookie: (await cookies()).getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 			},
 			cache: "no-store",
 		});

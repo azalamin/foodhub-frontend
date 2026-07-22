@@ -42,7 +42,7 @@ function PaymentSuccessContent() {
 					className='rounded-2xl font-black px-8 shadow-xl shadow-primary/20 h-14 text-base'
 				>
 					<Link href='/dashboard/orders' className='flex items-center gap-2'>
-						Track Order
+						Done — View My Orders
 						<ChevronRight size={18} />
 					</Link>
 				</Button>

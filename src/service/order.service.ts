@@ -14,7 +14,7 @@ export const orderService = {
 				cache: "no-store",
 				headers: {
 					"Content-Type": "application/json",
-					Cookie: cookieStore.toString(),
+					Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 				},
 			});
 
@@ -41,7 +41,7 @@ export const orderService = {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				Cookie: cookieStore.toString(),
+				Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 			},
 			credentials: "include",
 
@@ -63,7 +63,7 @@ export const orderService = {
 
 		const res = await fetch(`${env.API_URL}/api/admin/orders`, {
 			headers: {
-				Cookie: cookieStore.toString(),
+				Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 			},
 			cache: "no-store",
 		});
@@ -78,7 +78,7 @@ export const orderService = {
 	getProviderIncomingOrders: async () => {
 		const cookieStore = await cookies();
 		const res = await fetch(`${env.API_URL}/api/provider/orders`, {
-			headers: { Cookie: cookieStore.toString() },
+			headers: { Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ") },
 			cache: "no-store",
 		});
 		return res.json();
@@ -87,7 +87,7 @@ export const orderService = {
 	getProviderAllOrders: async () => {
 		const cookieStore = await cookies();
 		const res = await fetch(`${env.API_URL}/api/provider/all-orders`, {
-			headers: { Cookie: cookieStore.toString() },
+			headers: { Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ") },
 			cache: "no-store",
 		});
 		return res.json();
@@ -97,7 +97,7 @@ export const orderService = {
 		const cookieStore = await cookies();
 		const res = await fetch(`${env.API_URL}/api/provider/orders/${orderId}/status`, {
 			method: "PATCH",
-			headers: { "Content-Type": "application/json", Cookie: cookieStore.toString() },
+			headers: { "Content-Type": "application/json", Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ") },
 			body: JSON.stringify({ status }),
 		});
 		return res.json();
@@ -111,7 +111,7 @@ export const orderService = {
 				headers: {
 					"Content-Type": "application/json",
 					// Pass the cookies so the Express authMiddleware works
-					Cookie: cookieStore.toString(),
+					Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 				},
 			});
 

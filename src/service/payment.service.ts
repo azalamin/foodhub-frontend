@@ -12,7 +12,7 @@ export const paymentService = {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				Cookie: cookieStore.toString(),
+				Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 			},
 			credentials: "include",
 			cache: "no-store",

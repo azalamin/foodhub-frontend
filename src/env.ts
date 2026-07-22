@@ -10,8 +10,9 @@ export const env = createEnv({
 	},
 
 	client: {
-		NEXT_PUBLIC_AUTH_URL: z.url(),
+		NEXT_PUBLIC_AUTH_URL: z.url().optional(),
 		NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1),
+		NEXT_PUBLIC_FRONTEND_URL: z.url(),
 	},
 
 	runtimeEnv: {
@@ -21,5 +22,6 @@ export const env = createEnv({
 		AUTH_URL: process.env.AUTH_URL,
 		NEXT_PUBLIC_AUTH_URL: process.env.NEXT_PUBLIC_AUTH_URL,
 		NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
+		NEXT_PUBLIC_FRONTEND_URL: process.env.NEXT_PUBLIC_FRONTEND_URL,
 	},
 });

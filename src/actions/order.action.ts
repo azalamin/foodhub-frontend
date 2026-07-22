@@ -29,7 +29,7 @@ export async function updateOrderStatusAction(orderId: string, status: OrderStat
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
-			Cookie: cookieStore.toString(),
+			Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 		},
 		body: JSON.stringify({ status }),
 	});
@@ -50,7 +50,7 @@ export async function cancelOrderByAdminAction(orderId: string, status: OrderSta
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
-			Cookie: cookieStore.toString(),
+			Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 		},
 	});
 

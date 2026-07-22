@@ -40,7 +40,7 @@ export const providerService = {
 	getMyProfile: async () => {
 		const cookieStore = await cookies();
 		const res = await fetch(`${env.API_URL}/api/provider/me`, {
-			headers: { Cookie: cookieStore.toString() },
+			headers: { Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; ") },
 			cache: "no-store",
 		});
 		return res.json();
@@ -57,7 +57,7 @@ export const providerService = {
 			method: "PATCH",
 			headers: {
 				"Content-Type": "application/json",
-				Cookie: cookieStore.toString(),
+				Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 			},
 			body: JSON.stringify(profileData),
 		});

@@ -10,7 +10,7 @@ export async function createCategoryAction(name: string) {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			Cookie: cookieStore.toString(),
+			Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 		},
 		body: JSON.stringify({ name }),
 	});
@@ -31,7 +31,7 @@ export async function updateCategoryAction(categoryId: string, name: string) {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
-			Cookie: cookieStore.toString(),
+			Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 		},
 		body: JSON.stringify({ name }),
 	});
@@ -51,7 +51,7 @@ export async function deleteCategoryAction(categoryId: string) {
 	const res = await fetch(`${env.API_URL}/api/categories/${categoryId}`, {
 		method: "DELETE",
 		headers: {
-			Cookie: cookieStore.toString(),
+			Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 		},
 	});
 

@@ -13,7 +13,7 @@ export const reviewService = {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
-				Cookie: cookieStore.toString(),
+				Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 			},
 			body: JSON.stringify(reviewData),
 		});

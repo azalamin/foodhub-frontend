@@ -8,7 +8,7 @@ export const categoryService = {
 
 		const res = await fetch(`${env.API_URL}/api/categories`, {
 			headers: {
-				Cookie: cookieStore.toString(),
+				Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 			},
 			cache: "no-store",
 		});

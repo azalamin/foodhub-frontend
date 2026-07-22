@@ -23,8 +23,10 @@ const nextConfig: NextConfig = {
 	async rewrites() {
 		return [
 			{
+				// Proxy all auth requests through the frontend so Set-Cookie lands
+				// on the frontend domain — readable by both SSR and CSR.
 				source: "/api/auth/:path*",
-				destination: `${env.NEXT_PUBLIC_AUTH_URL}/api/auth/:path*`,
+				destination: `${env.API_URL}/api/auth/:path*`,
 			},
 		];
 	},

@@ -3,6 +3,7 @@
 import { AlertCircle, ArrowRight, Loader2, Lock, Mail } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { toast } from "sonner";
 
@@ -15,6 +16,16 @@ import { useForm } from "@tanstack/react-form";
 
 export function LoginForm() {
 	const router = useRouter();
+	const { data: session } = authClient.useSession();
+
+	// Redirect already-logged-in users — must be after all hook calls
+	useEffect(() => {
+		if (!session?.user) return;
+		const role = (session.user as any).role;
+		if (role === "ADMIN") router.replace("/admin-dashboard");
+		else if (role === "PROVIDER") router.replace("/provider-dashboard");
+		else router.replace("/dashboard");
+	}, [session, router]);
 
 	const form = useForm({
 		defaultValues: {

@@ -1,64 +1,75 @@
-import { Roles } from "@/constants/Roles";
-import { userService } from "@/service/user.service";
 import { NextRequest, NextResponse } from "next/server";
+
+const BACKEND_AUTH_URL = process.env.AUTH_URL ?? "https://food-hub-server-lime.vercel.app/api/auth";
 
 export async function proxy(request: NextRequest) {
 	const pathname = request.nextUrl.pathname;
 
-	// Skip middleware for verify-email route
+	// 1. Bypass check for public/verification routes
 	if (pathname.startsWith("/verify-email")) {
 		return NextResponse.next();
 	}
 
-	// Check for session token in cookies
 	const sessionToken = request.cookies.get("better-auth.session_token");
 
-	//* User is not authenticated at all
-	if (!sessionToken) {
+	// 2. Unauthenticated check
+	if (!sessionToken?.value) {
 		return NextResponse.redirect(new URL("/login", request.url));
 	}
 
-	let isAuthenticated: boolean = false;
-	let isAdmin: boolean = false;
-	let isProvider: boolean = false;
-	let isCustomer: boolean = false;
+	try {
+		// 3. Single authoritative session verification with backend
+		const res = await fetch(`${BACKEND_AUTH_URL}/get-session`, {
+			method: "GET",
+			headers: {
+				Cookie: `better-auth.session_token=${sessionToken.value}`,
+				"Content-Type": "application/json",
+			},
+			cache: "no-store",
+		});
 
-	const { data } = await userService.getSession();
+		if (!res.ok) {
+			return NextResponse.redirect(new URL("/login", request.url));
+		}
 
-	if (data) {
-		isAuthenticated = true;
-		isAdmin = data.user.role === Roles.admin;
-		isProvider = data.user.role === Roles.provider;
-		isCustomer = data.user.role === Roles.customer;
-	}
+		const session = await res.json();
+		const user = session?.user;
 
-	// User is not authenticated
-	if (!isAuthenticated) {
+		if (!user?.id) {
+			return NextResponse.redirect(new URL("/login", request.url));
+		}
+
+		const role = user.role ?? "CUSTOMER";
+
+		// 4. Role-Based Access Control & Redirection
+		if (role === "ADMIN") {
+			if (pathname.startsWith("/dashboard") || pathname.startsWith("/provider-dashboard")) {
+				return NextResponse.redirect(new URL("/admin-dashboard", request.url));
+			}
+		} else if (role === "PROVIDER") {
+			if (pathname.startsWith("/dashboard") || pathname.startsWith("/admin-dashboard")) {
+				return NextResponse.redirect(new URL("/provider-dashboard", request.url));
+			}
+		} else if (role === "CUSTOMER") {
+			if (pathname.startsWith("/provider-dashboard") || pathname.startsWith("/admin-dashboard")) {
+				return NextResponse.redirect(new URL("/dashboard", request.url));
+			}
+		}
+
+		// 5. Pass validated context to Server Components/Route Handlers via headers
+		const requestHeaders = new Headers(request.headers);
+		requestHeaders.set("x-user-id", user.id);
+		requestHeaders.set("x-user-role", role);
+		requestHeaders.set("x-user-email", user.email ?? "");
+		requestHeaders.set("x-user-name", user.name ?? "");
+
+		return NextResponse.next({
+			request: { headers: requestHeaders },
+		});
+	} catch {
+		// Fail closed on unreachable backend or network failure
 		return NextResponse.redirect(new URL("/login", request.url));
 	}
-
-	// ADMIN rules
-	if (isAdmin) {
-		if (pathname.startsWith("/dashboard") || pathname.startsWith("/provider-dashboard")) {
-			return NextResponse.redirect(new URL("/admin-dashboard", request.url));
-		}
-	}
-
-	// PROVIDER rules
-	if (isProvider) {
-		if (pathname.startsWith("/dashboard") || pathname.startsWith("/admin-dashboard")) {
-			return NextResponse.redirect(new URL("/provider-dashboard", request.url));
-		}
-	}
-
-	// CUSTOMER rules
-	if (isCustomer) {
-		if (pathname.startsWith("/provider-dashboard") || pathname.startsWith("/admin-dashboard")) {
-			return NextResponse.redirect(new URL("/dashboard", request.url));
-		}
-	}
-
-	return NextResponse.next();
 }
 
 export const config = {

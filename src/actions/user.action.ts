@@ -18,7 +18,7 @@ export async function updateUserStatusAction(userId: string, status: "ACTIVE" | 
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
-			Cookie: cookieStore.toString(),
+			Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 		},
 		body: JSON.stringify({ status }),
 	});
@@ -41,7 +41,7 @@ export async function adminUpgradeToProviderAction(userId: string) {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
-			Cookie: cookieStore.toString(),
+			Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
 		},
 		body: JSON.stringify({ role: "PROVIDER" }),
 	});

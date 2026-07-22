@@ -2,7 +2,9 @@ import { LoginForm } from "@/components/modules/authentication/LoginForm";
 import { UtensilsCrossed } from "lucide-react";
 import Link from "next/link";
 
-export default async function LoginPage() {
+// No server-side session check here — doing so created a redirect loop with the
+// dashboard layout.  Logged-in users are redirected client-side from LoginForm.
+export default function LoginPage() {
 	return (
 		<div className='min-h-screen bg-muted/30 flex items-center justify-center pb-6 px-4'>
 			<div className='grid w-full max-w-5xl min-h-[600px] lg:grid-cols-2 bg-background rounded-[2.5rem] overflow-hidden shadow-2xl border-none'>

@@ -24,7 +24,7 @@ export function AddToCart({ meal }: { meal: any }) {
 			name: meal.name,
 			price: meal.price,
 			quantity,
-			providerId: undefined, // You can map this if needed
+			providerId: meal.providerId,
 		});
 
 		toast.success("Added to your bag!", {

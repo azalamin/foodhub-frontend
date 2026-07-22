@@ -2,18 +2,22 @@ import { User } from "@/types/user.types";
 import { cookies } from "next/headers";
 import { env } from "../env";
 
-const AUTH_URL = env.AUTH_URL;
-
 export const userService = {
 	getSession: async () => {
 		try {
 			const cookiesStore = await cookies();
-			const res = await fetch(`${AUTH_URL}/get-session`, {
+			// Build cookie header manually to avoid encodeURIComponent() mangling
+			// token values (cookies().toString() URL-encodes values which breaks lookup).
+			const cookieHeader = cookiesStore
+				.getAll()
+				.map(c => `${c.name}=${c.value}`)
+				.join("; ");
+
+			const res = await fetch(`${env.AUTH_URL}/get-session`, {
 				headers: {
-					Cookie: cookiesStore.toString(),
+					Cookie: cookieHeader,
 				},
 				cache: "no-store",
-				next: { revalidate: 0 },
 			});
 			const session = await res.json();
 
@@ -60,7 +64,7 @@ export const userService = {
 
 		const data = await res.json();
 
-		const result = await fetch(`${env.API_URL}/api/providers`, {
+		await fetch(`${env.API_URL}/api/providers`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
