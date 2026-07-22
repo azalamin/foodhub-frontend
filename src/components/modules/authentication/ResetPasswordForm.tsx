@@ -50,10 +50,9 @@ export default function ResetPasswordForm() {
 					return;
 				}
 
-				toast.success("Password reset successfully! Redirecting to login...", { id: toastId });
-				setTimeout(() => {
-					router.push("/login");
-				}, 1500);
+				toast.success("Password reset successfully! Logging you in...", { id: toastId });
+				router.push("/dashboard");
+				router.refresh();
 			} catch (err: any) {
 				toast.error(err?.message || "An unexpected error occurred", { id: toastId });
 			}
