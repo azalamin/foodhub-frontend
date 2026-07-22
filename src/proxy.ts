@@ -6,7 +6,7 @@ const BACKEND_AUTH_URL =
 	"https://food-hub-server-lime.vercel.app/api/auth";
 
 const PROTECTED_ROUTES = ["/dashboard", "/provider-dashboard", "/admin-dashboard"];
-const AUTH_ROUTES = ["/login", "/register"];
+const AUTH_ROUTES = ["/login", "/register", "/forgot-password", "/reset-password"];
 
 export async function proxy(request: NextRequest) {
 	const pathname = request.nextUrl.pathname;
@@ -125,5 +125,7 @@ export const config = {
 		"/admin-dashboard/:path*",
 		"/login",
 		"/register",
+		"/forgot-password",
+		"/reset-password",
 	],
 };
