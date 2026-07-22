@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, ArrowRight, KeyRound, Loader2, Lock } from "lucide-react";
+import { AlertCircle, ArrowRight, KeyRound, Loader2, Lock, Mail } from "lucide-react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
@@ -15,15 +15,22 @@ export default function ResetPasswordForm() {
 	const router = useRouter();
 	const searchParams = useSearchParams();
 	const token = searchParams.get("token");
+	const initialEmail = searchParams.get("email") ?? "";
 
 	const form = useForm({
 		defaultValues: {
+			email: initialEmail,
 			password: "",
 			confirmPassword: "",
 		},
 		onSubmit: async ({ value }) => {
 			if (!token) {
 				toast.error("Invalid or missing reset token. Please request a new password reset link.");
+				return;
+			}
+
+			if (!value.email) {
+				toast.error("Please enter your email address.");
 				return;
 			}
 
@@ -37,20 +44,36 @@ export default function ResetPasswordForm() {
 				return;
 			}
 
-			const toastId = toast.loading("Updating your password...");
+			const toastId = toast.loading("Updating password & logging in...");
 
 			try {
-				const { error } = await authClient.resetPassword({
+				// 1. Reset password on backend
+				const { error: resetError } = await authClient.resetPassword({
 					newPassword: value.password,
 					token,
 				});
 
-				if (error) {
-					toast.error(error.message || "Failed to reset password", { id: toastId });
+				if (resetError) {
+					toast.error(resetError.message || "Failed to reset password", { id: toastId });
 					return;
 				}
 
-				toast.success("Password reset successfully! Logging you in...", { id: toastId });
+				// 2. Perform immediate auto sign-in with the new password
+				const { error: signInError } = await authClient.signIn.email({
+					email: value.email,
+					password: value.password,
+				});
+
+				if (signInError) {
+					console.error("Auto sign-in notice:", signInError);
+					toast.success("Password reset successfully! Please log in with your new password.", {
+						id: toastId,
+					});
+					router.push("/login");
+					return;
+				}
+
+				toast.success("Password reset successfully! Welcome back.", { id: toastId });
 				router.push("/dashboard");
 				router.refresh();
 			} catch (err: any) {
@@ -85,6 +108,33 @@ export default function ResetPasswordForm() {
 			}}
 			className='space-y-5'
 		>
+			{/* EMAIL FIELD */}
+			<form.Field
+				name='email'
+				children={field => (
+					<div className='space-y-2'>
+						<Label className='ml-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground'>
+							Email Address
+						</Label>
+						<div className='relative'>
+							<Mail
+								className='absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground'
+								size={18}
+							/>
+							<Input
+								type='email'
+								placeholder='name@example.com'
+								required
+								className='h-14 pl-12 rounded-2xl border-2 border-muted bg-muted/20 focus-visible:ring-primary focus:bg-background transition-all font-bold'
+								value={field.state.value}
+								onBlur={field.handleBlur}
+								onChange={e => field.handleChange(e.target.value)}
+							/>
+						</div>
+					</div>
+				)}
+			/>
+
 			{/* NEW PASSWORD FIELD */}
 			<form.Field
 				name='password'
@@ -151,7 +201,7 @@ export default function ResetPasswordForm() {
 							<Loader2 className='animate-spin' />
 						) : (
 							<>
-								Reset Password <ArrowRight size={20} />
+								Reset & Log In <ArrowRight size={20} />
 							</>
 						)}
 					</Button>

@@ -16,7 +16,7 @@ export default function ForgotPasswordForm() {
 			try {
 				const { error } = await authClient.requestPasswordReset({
 					email: value.email,
-					redirectTo: "/reset-password",
+					redirectTo: `/reset-password?email=${encodeURIComponent(value.email)}`,
 				});
 				if (error) throw new Error(error.message);
 				toast.success("Reset link sent! Check your inbox.", { id: toastId });
