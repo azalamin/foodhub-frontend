@@ -1,5 +1,7 @@
 import { getOrderById } from "@/actions/order.action";
+import { OrderStatusBadge } from "@/components/modules/orders/order-status-badge";
 import { OrderStepper } from "@/components/modules/orders/order-stepper";
+import { PaymentStatusBadge } from "@/components/modules/orders/payment-status-badge";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { format } from "date-fns";
@@ -45,13 +47,19 @@ async function OrderContentContainer({ id }: { id: string }) {
 		<>
 			{/* Live Stepper Section */}
 			<div className='bg-card border-2 border-muted p-10 rounded-[3rem] shadow-xl'>
-				<div className='flex justify-between items-center mb-6'>
-					<p className='text-xs font-bold text-muted-foreground uppercase tracking-widest'>
-						Reference: #{order.id.slice(-6).toUpperCase()}
-					</p>
-					<p className='text-xs font-bold text-muted-foreground uppercase tracking-widest'>
-						{format(new Date(order.createdAt), "PPP")}
-					</p>
+				<div className='flex flex-wrap justify-between items-center gap-4 mb-6'>
+					<div className='space-y-1'>
+						<p className='text-xs font-bold text-muted-foreground uppercase tracking-widest'>
+							Reference: #{order.id.slice(-6).toUpperCase()}
+						</p>
+						<p className='text-xs font-bold text-muted-foreground uppercase tracking-widest'>
+							{format(new Date(order.createdAt), "PPP")}
+						</p>
+					</div>
+					<div className='flex items-center gap-2'>
+						<PaymentStatusBadge paymentStatus={order.paymentStatus} paymentMethod={order.paymentMethod} />
+						<OrderStatusBadge status={order.status} />
+					</div>
 				</div>
 				<OrderStepper currentStatus={order.status} />
 			</div>
@@ -72,9 +80,9 @@ async function OrderContentContainer({ id }: { id: string }) {
 										<div className='h-10 w-10 rounded-xl bg-muted flex items-center justify-center font-bold text-sm'>
 											{item.quantity}x
 										</div>
-										<p className='font-bold'>{item.meal?.name || "Delicious Meal"}</p>
+										<p className='font-bold'>{item.mealName || item.meal?.name || "Delicious Meal"}</p>
 									</div>
-									<p className='font-mono font-bold'>৳{item.price * item.quantity}</p>
+									<p className='font-mono font-bold'>৳{(item.mealPrice || item.price || 0) * item.quantity}</p>
 								</div>
 							))}
 						</div>
@@ -91,7 +99,7 @@ async function OrderContentContainer({ id }: { id: string }) {
 								<span className='text-green-600 font-bold'>FREE</span>
 							</div>
 							<div className='flex justify-between items-baseline pt-2'>
-								<span className='font-black text-xl'>Total Paid</span>
+								<span className='font-black text-xl'>Total Amount</span>
 								<span className='text-3xl font-black text-primary font-mono'>
 									৳{order.totalPrice}
 								</span>
@@ -126,14 +134,19 @@ async function OrderContentContainer({ id }: { id: string }) {
 						</Button>
 					</div>
 
-					<div className='flex items-center gap-3 px-6 py-4 bg-muted/20 rounded-2xl'>
-						<CreditCard size={18} className='text-muted-foreground' />
-						<div>
-							<p className='text-[10px] font-bold uppercase text-muted-foreground'>
-								Payment Method
-							</p>
-							<p className='text-xs font-bold italic'>Cash on Delivery</p>
+					<div className='flex items-center justify-between gap-3 px-6 py-4 bg-muted/20 rounded-2xl'>
+						<div className='flex items-center gap-3'>
+							<CreditCard size={18} className='text-muted-foreground' />
+							<div>
+								<p className='text-[10px] font-bold uppercase text-muted-foreground'>
+									Payment Method
+								</p>
+								<p className='text-xs font-bold italic'>
+									{order.paymentMethod === "CARD" ? "Card / Online" : "Cash on Delivery"}
+								</p>
+							</div>
 						</div>
+						<PaymentStatusBadge paymentStatus={order.paymentStatus} paymentMethod={order.paymentMethod} />
 					</div>
 				</div>
 			</div>

@@ -2,6 +2,7 @@
 
 import { AdminOrder } from "@/types";
 import { CalendarDays, Store, User } from "lucide-react";
+import { PaymentStatusBadge } from "../orders/payment-status-badge";
 import { OrderActions } from "./order-action";
 
 export function AdminOrderTable({ orders }: { orders: AdminOrder[] }) {
@@ -18,7 +19,7 @@ export function AdminOrderTable({ orders }: { orders: AdminOrder[] }) {
 								Parties
 							</th>
 							<th className='px-8 py-5 text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground'>
-								Financials
+								Financials & Payment
 							</th>
 							<th className='px-8 py-5 text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground'>
 								Status
@@ -59,15 +60,13 @@ export function AdminOrderTable({ orders }: { orders: AdminOrder[] }) {
 									</div>
 								</td>
 
-								{/* Financials */}
+								{/* Financials & Payment */}
 								<td className='px-8 py-5 text-center'>
-									<div className='flex flex-col items-center gap-0.5'>
+									<div className='flex flex-col items-center gap-1'>
 										<span className='font-black text-emerald-600 italic'>
 											৳{order.totalPrice.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
 										</span>
-										<span className='text-[8px] font-black uppercase text-muted-foreground tracking-widest'>
-											Net Total
-										</span>
+										<PaymentStatusBadge paymentStatus={order.paymentStatus} paymentMethod={order.paymentMethod} />
 									</div>
 								</td>
 

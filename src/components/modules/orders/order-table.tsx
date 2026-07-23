@@ -4,6 +4,7 @@ import { updateOrderStatusProviderAction } from "@/actions/order.action";
 import { CheckCircle2, ChevronRight, Clock, MapPin, Timer, XCircle } from "lucide-react";
 import { useTransition } from "react";
 import { toast } from "sonner";
+import { PaymentStatusBadge } from "./payment-status-badge";
 
 const statusStyles: Record<string, { color: string; icon: any; bg: string }> = {
 	PLACED: { color: "text-blue-600", bg: "bg-blue-50", icon: Clock },
@@ -43,7 +44,7 @@ export function ProviderOrderTable({ orders }: { orders: any[] }) {
 								Menu Items
 							</th>
 							<th className='px-8 py-6 text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground'>
-								Earnings
+								Earnings & Payment
 							</th>
 							<th className='px-8 py-6 text-center text-[10px] font-black uppercase tracking-widest text-muted-foreground'>
 								Flow State
@@ -90,21 +91,24 @@ export function ProviderOrderTable({ orders }: { orders: any[] }) {
 													key={idx}
 													className='bg-muted px-2 py-0.5 rounded-md text-[10px] font-bold'
 												>
-													{i.name}
+													{i.name || i.mealName}
 												</span>
 											))}
 										</div>
 									</td>
 
-									{/* Total Price with your Comma Style */}
+									{/* Total Price & Payment Status */}
 									<td className='px-8 py-6 text-center'>
-										<span className='font-black text-emerald-600 italic'>
-											৳
-											{(order.totalPrice ?? 0).toLocaleString("en-IN", {
-												minimumFractionDigits: 2,
-												maximumFractionDigits: 2,
-											})}
-										</span>
+										<div className='flex flex-col items-center gap-1.5'>
+											<span className='font-black text-emerald-600 italic'>
+												৳
+												{(order.totalPrice ?? 0).toLocaleString("en-IN", {
+													minimumFractionDigits: 2,
+													maximumFractionDigits: 2,
+												})}
+											</span>
+											<PaymentStatusBadge paymentStatus={order.paymentStatus} paymentMethod={order.paymentMethod} />
+										</div>
 									</td>
 
 									{/* Flow State Badge */}

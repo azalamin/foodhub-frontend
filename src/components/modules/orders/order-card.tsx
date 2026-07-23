@@ -6,6 +6,7 @@ import { Calendar, ChevronRight, Receipt, Star, Utensils } from "lucide-react";
 import Link from "next/link";
 import { ReviewModal } from "../review/review-modal";
 import { OrderStatusBadge } from "./order-status-badge";
+import { PaymentStatusBadge } from "./payment-status-badge";
 
 export function OrderCard({ order }: { order: Order }) {
 	return (
@@ -31,7 +32,7 @@ export function OrderCard({ order }: { order: Order }) {
 					</div>
 				</div>
 
-				<div className='flex items-center self-start gap-3'>
+				<div className='flex flex-wrap items-center self-start gap-2'>
 					{/* SHOW RATING IF REVIEW EXISTS */}
 					{order.review && (
 						<div className='flex items-center gap-1 bg-emerald-500/10 text-emerald-600 px-3 py-1 rounded-full border border-emerald-500/20'>
@@ -39,6 +40,7 @@ export function OrderCard({ order }: { order: Order }) {
 							<span className='text-[10px] font-black'>{order.review.rating}</span>
 						</div>
 					)}
+					<PaymentStatusBadge paymentStatus={order.paymentStatus} paymentMethod={order.paymentMethod} />
 					<OrderStatusBadge status={order.status} />
 				</div>
 			</div>
@@ -60,7 +62,7 @@ export function OrderCard({ order }: { order: Order }) {
 			<div className='flex items-center justify-between pt-4 border-t border-muted/50'>
 				<div>
 					<p className='text-[10px] uppercase font-bold text-muted-foreground tracking-[0.2em] mb-0.5'>
-						Total Paid
+						Total Amount
 					</p>
 					<p className='text-2xl font-black text-foreground font-mono'>৳{order.totalPrice}</p>
 				</div>

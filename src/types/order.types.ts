@@ -61,6 +61,8 @@ export interface AdminOrder {
 	status: OrderStatus;
 	totalPrice: number;
 	deliveryAddress: string;
+	paymentStatus?: PaymentStatus;
+	paymentMethod?: PaymentMethod;
 	createdAt: string;
 
 	customer: {
