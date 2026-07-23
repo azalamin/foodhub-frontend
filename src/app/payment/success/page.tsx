@@ -1,14 +1,21 @@
 "use client";
 
+import { confirmPaymentAction } from "@/actions/payment.action";
 import { Button } from "@/components/ui/button";
 import { CheckCircle2, ChevronRight, ShoppingBag } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 
 function PaymentSuccessContent() {
 	const searchParams = useSearchParams();
 	const orderId = searchParams.get("orderId");
+
+	useEffect(() => {
+		if (orderId) {
+			confirmPaymentAction(orderId);
+		}
+	}, [orderId]);
 
 	return (
 		<div className='container max-w-lg py-24 px-4 mx-auto text-center space-y-8'>

@@ -27,4 +27,26 @@ export const paymentService = {
 
 		return data as { success: boolean; data: { clientSecret: string; orderId: string; totalPrice: number } };
 	},
+	confirmPayment: async (orderId: string) => {
+		const cookieStore = await cookies();
+
+		const res = await fetch(`${env.API_URL}/api/payments/confirm`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				Cookie: cookieStore.getAll().map((c) => `${c.name}=${c.value}`).join("; "),
+			},
+			credentials: "include",
+			cache: "no-store",
+			body: JSON.stringify({ orderId }),
+		});
+
+		const data = await res.json();
+
+		if (!res.ok) {
+			throw new Error(data.message || "Failed to confirm payment");
+		}
+
+		return data as { success: boolean; data: any };
+	},
 };

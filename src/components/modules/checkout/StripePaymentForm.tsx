@@ -6,6 +6,8 @@ import { Lock, ShieldCheck } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 
+import { confirmPaymentAction } from "@/actions/payment.action";
+
 interface StripePaymentFormProps {
 	orderId: string;
 	totalPrice: number;
@@ -39,6 +41,7 @@ export function StripePaymentForm({ orderId, totalPrice, onSuccess }: StripePaym
 			}
 
 			if (paymentIntent?.status === "succeeded") {
+				await confirmPaymentAction(orderId);
 				toast.success("Payment successful!", { description: "Your order is being prepared." });
 				onSuccess();
 			}

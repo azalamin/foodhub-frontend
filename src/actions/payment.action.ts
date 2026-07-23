@@ -11,3 +11,12 @@ export async function createPaymentIntentAction(payload: CreateOrderPayload) {
 		return { success: false, message: error.message || "Failed to initiate payment" };
 	}
 }
+
+export async function confirmPaymentAction(orderId: string) {
+	try {
+		const result = await paymentService.confirmPayment(orderId);
+		return { success: true, data: result.data };
+	} catch (error: any) {
+		return { success: false, message: error.message || "Failed to confirm payment" };
+	}
+}
