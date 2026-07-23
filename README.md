@@ -1,268 +1,137 @@
-# 🍱 FoodHu
+# 🍱 FoodHub | Next-Gen Multi-Role Food Marketplace (Frontend)
 
-### Next-Gen Multi-Role Food Marketplace
+[![Live Demo](https://img.shields.io/badge/🌐_Live_Demo-FoodHub-22c55e?style=for-the-badge)](https://foodhubbd.vercel.app/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.1-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.0-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4.0-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![Better Auth](https://img.shields.io/badge/Better_Auth-v1.4-violet?style=for-the-badge)](https://www.better-auth.com/)
+[![Stripe](https://img.shields.io/badge/Stripe-Integration-6772E5?style=for-the-badge&logo=stripe)](https://stripe.com/)
 
-## [Explanation Video](https://drive.google.com/file/d/1-n7CXgJ05I44VifH7hKICdp587Y7-ANc/view?usp=sharing)
-
-<p align="center">
-  <a href="https://foodhubbd.vercel.app/">
-    <img src="https://img.shields.io/badge/🌐_Live_Demo-FoodHub-22c55e?style=for-the-badge" />
-  </a>
-  <img src="https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js" />
-  <img src="https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma" />
-  <img src="https://img.shields.io/badge/PostgreSQL-Relational-blue?style=for-the-badge&logo=postgresql" />
-</p>
-
-<p align="center">
-  <b>A premium, production-ready food marketplace built for scale, security, and speed.</b><br/>
-  Customers order. Providers sell. Admins control. Everything just works.
-</p>
+> **FoodHub** is a production-grade, multi-role full-stack food ordering marketplace built with **Next.js 16 (App Router & Turbopack)**, **React 19**, **Tailwind CSS v4**, **Stripe**, and **Better Auth**. Engineered for high performance, edge-safe role-based routing, and real-time order tracking.
 
 ---
 
-## ✨ What is FoodHub?
+## 📽️ Project Overview & Video Walkthrough
 
-**FoodHub** is not a demo app — it’s a **real-world, multi-role food marketplace** engineered to handle complex business logic, secure authentication, and relational data at scale.
-
-Instead of MongoDB, FoodHub uses **PostgreSQL** for strong relational integrity, making it suitable for real production use where data consistency actually matters.
-
----
-
-## 🔥 Core Highlights
-
-### 🔐 Authentication & Access Control (Enterprise-Grade)
-
-- **Multi-Role System:** `ADMIN`, `PROVIDER`, `CUSTOMER`
-- **Role-Based Redirects:** Smart middleware auto-routes users to the correct dashboard
-- **Email Verification Flow:** Built with **Better Auth** to block fake & spam accounts
-- **Edge-Safe Security:** Unauthorized users are stopped at middleware level
-
-> Result: zero unauthorized dashboard access, zero chaos.
+- **🌐 Live Web Application:** [https://foodhubbd.vercel.app](https://foodhubbd.vercel.app)
+- **📹 Video Demonstration:** [Watch Video Walkthrough](https://drive.google.com/file/d/1-n7CXgJ05I44VifH7hKICdp587Y7-ANc/view?usp=sharing)
 
 ---
 
-### 🧠 Data Architecture & Performance
+## ✨ Key Features & Highlights
 
-- **Prisma ORM:** Clean, scalable relations between  
-  `User → ProviderProfile → Meals → Categories`
-- **PostgreSQL Indexing:** Fast filtering, searching, and pagination
-- **Dynamic Seeding Engine:**
-  - Fetches live Provider & Category IDs
-  - Prevents `P2003` foreign-key crashes
-  - Seeds **40+ meals** & **30+ cuisines** safely
+### 🔐 1. Next.js 16 Proxy & Multi-Role Access Control (RBAC)
+- **Role-Aware Parallel Routing**: Custom layout using Next.js Parallel Routes (`@customer`, `@provider`, `@admin`) under `(dashboardLayout)`.
+- **Edge Proxy Middleware (`src/proxy.ts`)**: Next.js 16 file convention that intercepts requests, validates sessions with the backend, and injects user context (`x-user-role`, `x-user-id`) into request headers.
+- **Automated Auth Redirection**: Authenticated users visiting `/login` or `/register` are automatically redirected to their role-specific dashboard.
 
-> Built like a system, not a script.
+### 💳 2. Payment Gateway & Checkout System
+- **Dual Payment Methods**: Supports **Stripe Online Credit Card Payment** and **Cash on Delivery (COD)**.
+- **Instant Payment Verification**: Client-side verification endpoint (`/api/payments/confirm`) automatically updates order status to `PAID` in the database upon Stripe charge completion.
+- **BDT Currency Support**: BDT (৳) display on UI with automatic currency conversion for international Stripe card processing.
 
----
-
-### 🎨 Premium UI / UX Experience
-
-- **Explore by Cuisine:** Dynamic, database-driven categories
-- **Cinematic Food Visuals:** Hero-style, high-impact imagery
-- **Professional Currency Formatting:**  
-  `17,66,322.22` (South Asian standard)
-- **Modern Component System:** Shadcn/UI + Tailwind CSS
-
-> Clean. Fast. Conversion-focused.
+### 🍱 3. Marketplace & Order Management
+- **Meal Catalog & Filtering**: Browse meals by category, restaurant provider, and availability.
+- **Real-Time Order Tracking**: Interactive step progress tracker (`PLACED` → `PREPARING` → `READY` → `DELIVERED`).
+- **Review & Rating System**: Customers can submit meal reviews once orders reach `DELIVERED` status.
+- **Responsive Layout**: Sleek glassmorphism UI with Dark/Light theme toggle built using Tailwind CSS v4 and Radix UI.
 
 ---
 
-## 🧰 Tech Stack
+## 🛠️ Tech Stack (Frontend)
 
-### Frontend
-
-- **Next.js 15** (App Router)
-- **TypeScript**
-- **Tailwind CSS**
-- **Shadcn/UI**
-- **Lucide React**
-
-### Backend
-
-- **Next.js Server Actions**
-- **Next.js Middleware**
-- **Better Auth**
-
-### Database
-
-- **PostgreSQL** (Vercel Postgres / Supabase)
-- **Prisma ORM**
+| Category | Technology |
+| :--- | :--- |
+| **Framework** | Next.js 16.1.6 (App Router & Turbopack) |
+| **UI Library** | React 19, Radix UI Primitives, Lucide Icons |
+| **Styling** | Tailwind CSS v4, `clsx`, `tailwind-merge` |
+| **Form Management** | TanStack React Form & Zod Schema Validation |
+| **Authentication** | Better Auth React Client (`better-auth/react`) |
+| **Payments** | Stripe JS (`@stripe/stripe-js`, `@stripe/react-stripe-js`) |
+| **Notifications** | Sonner Toasts |
 
 ---
 
-## 🗂️ Project Structure
+## 📁 Project Structure
 
 ```text
-src/
-├── actions/                     # Server Actions (isolated & reusable)
-│   ├── auth.actions.ts
-│   ├── meal.actions.ts
-│   ├── order.actions.ts
-│   └── review.actions.ts
-
-├── app/
-│   ├── (public)/                # Public routes (no auth required)
-│   │   ├── page.tsx             # Home
-│   │   ├── meals/
-│   │   │   └── page.tsx
-│   │   └── layout.tsx
-│
-│   ├── (auth)/                  # Auth-only routes
-│   │   ├── login/
-│   │   ├── register/
-│   │   ├── verify-email/
-│   │   └── layout.tsx
-│
-│   ├── (dashboard)/             # Protected dashboards
-│   │   ├── admin/
-│   │   │   ├── page.tsx
-│   │   │   └── users/
-│   │   ├── provider/
-│   │   │   ├── page.tsx
-│   │   │   └── meals/
-│   │   ├── customer/
-│   │   │   ├── page.tsx
-│   │   │   └── orders/
-│   │   └── layout.tsx
-│
-│   ├── layout.tsx               # Root layout
-│   ├── loading.tsx              # Global loader
-│   ├── not-found.tsx
-│   └── globals.css
-│
-├── components/
-│   ├── layout/                  # Layout-specific components
-│   │   ├── Navbar.tsx
-│   │   ├── Footer.tsx
-│   │   └── Sidebar.tsx
-│
-│   ├── common/                  # Shared components
-│   │   ├── EmptyState.tsx
-│   │   ├── Pagination.tsx
-│   │   └── Modal.tsx
-│
-│   ├── features/                # Feature-based UI (🔥 important)
-│   │   ├── auth/
-│   │   ├── meals/
-│   │   ├── orders/
-│   │   ├── reviews/
-│   │   └── provider/
-│
-│   └── ui/                      # Shadcn / base UI
-│       ├── button.tsx
-│       ├── input.tsx
-│       └── dialog.tsx
-│
-├── lib/                         # Core utilities
-│   ├── auth.ts
-│   ├── prisma.ts
-│   ├── session.ts
-│   └── format.ts
-│
-├── services/                    # Business logic layer
-│   ├── auth.service.ts
-│   ├── meal.service.ts
-│   ├── order.service.ts
-│   └── review.service.ts
-│
-├── schemas/                     # Zod validation
-│   ├── auth.schema.ts
-│   ├── meal.schema.ts
-│   └── order.schema.ts
-│
-├── providers/                   # React Context Providers
-│   ├── ThemeProvider.tsx
-│   ├── AuthProvider.tsx
-│   └── CartProvider.tsx
-│
-├── constants/
-│   ├── roles.ts
-│   ├── routes.ts
-│   └── config.ts
-│
-├── types/                       # Global TS types
-│   ├── auth.ts
-│   ├── meal.ts
-│   └── order.ts
-│
-├── routes/                      # Route protection logic
-│   ├── protected.routes.ts
-│   └── public.routes.ts
-│
-├── middleware.ts                # Role-based access control
-├── env.ts                       # Typed env validation
-└── README.md
-
+foodhub-frontend/
+├── public/                     # Static assets & favicon
+├── src/
+│   ├── actions/                # Server Actions (Isolated & Reusable)
+│   │   ├── order.action.ts     # Order placement & status updates
+│   │   ├── payment.action.ts   # Stripe intent & payment confirmation
+│   │   ├── meal.action.ts      # Meal catalog data fetching
+│   │   └── review.action.ts    # Rating & review submission
+│   ├── app/
+│   │   ├── (commonLayout)/     # Public & Auth layouts
+│   │   │   ├── (auth)/         # Login, Register, Forgot & Reset Password
+│   │   │   ├── (shoppingCart)/ # Checkout & Bag management
+│   │   │   └── meals/          # Public meal listing & details
+│   │   ├── (dashboardLayout)/  # Parallel Dashboard Routes
+│   │   │   ├── @admin/         # Admin Dashboard (Users, Categories, Orders)
+│   │   │   ├── @customer/      # Customer Dashboard (My Orders, Order Detail)
+│   │   │   ├── @provider/      # Kitchen Provider Dashboard (Menu, Orders)
+│   │   │   └── layout.tsx      # Role-based parallel route renderer
+│   │   ├── payment/            # Payment success handler (/payment/success)
+│   │   └── layout.tsx          # Root Layout & Theme/Cart Providers
+│   ├── components/
+│   │   ├── layout/             # Navbar, Footer, Sidebar, Mobile Menu
+│   │   ├── modules/            # Domain UI modules (auth, checkout, meals, orders, admin)
+│   │   └── ui/                 # Reusable Radix/Tailwind components (Button, Input, Badge)
+│   ├── lib/
+│   │   ├── auth-client.ts      # Better Auth client instance
+│   │   └── utils.ts            # Classnames & formatting helpers
+│   ├── providers/              # Cart Context & Theme Providers
+│   ├── service/                # Business API layer (`order.service`, `payment.service`)
+│   ├── types/                  # TypeScript interface definitions
+│   ├── env.ts                  # T3-env environment variable validator
+│   └── proxy.ts                # Next.js 16 Edge Proxy Middleware
+├── next.config.ts              # Next.js configuration & API rewrites
+├── package.json
+└── tsconfig.json
 ```
 
-## 🚀 Getting Started
+---
 
-### 1️⃣ Clone the Repository
+## ⚙️ Installation & Local Setup
 
+### 1. Prerequisites
+- Node.js v20.x or higher
+- `pnpm` or `npm` package manager
+
+### 2. Clone Repository & Install Dependencies
 ```bash
 git clone https://github.com/azalamin/foodhub-frontend.git
 cd foodhub-frontend
+pnpm install
 ```
 
-### 2️⃣ Install Dependencies
+### 3. Environment Configuration
+Create a `.env.local` file in the root directory:
+```env
+BACKEND_URL=http://localhost:4000
+FRONTEND_URL=http://localhost:3000
+API_URL=http://localhost:4000
+AUTH_URL=http://localhost:4000/api/auth
 
+NEXT_PUBLIC_AUTH_URL=http://localhost:3000
+NEXT_PUBLIC_FRONTEND_URL=http://localhost:3000
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
+```
+
+### 4. Run Development Server
 ```bash
-npm install
+pnpm dev
 ```
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-### 3️⃣ Environment Setup
+---
 
-Create a .env file in the root directory:
+## 👨‍💻 Author
 
-```bash
-DATABASE_URL=your_postgres_url
-BETTER_AUTH_SECRET=your_secret_key
-SMTP_HOST=your_smtp_host
-SMTP_USER=your_email
-SMTP_PASS=your_password
+**Al Amin Sheikh**  
+*Full-Stack Web Developer (MERN / Next.js / TypeScript)*
 
-```
-
-### 4️⃣ Database Sync & Seed
-
-```bash
-npx prisma generate
-npx prisma migrate dev
-npx prisma db seed
-```
-
-### 5️⃣ Run the Project
-
-```bash
-npm run dev
-```
-
-Open 👉 http://localhost:3000
-
-🧩 Technical Challenges Solved
-🧠 Dynamic Data Mapping
-
-- Built a smart seeding engine that dynamically resolves Provider and Category IDs to eliminate foreign-key conflicts (P2003).
-
-- ⚡ Edge Middleware Optimization
-
-- Session handling optimized for Edge Runtime to deliver instant, role-aware redirects with zero lag.
-
-- 📧 Email Verification Race Conditions
-
-- Fixed token expiration edge cases in custom verification flows — no broken links, no false negatives.
-
-#### 🌍 Live Demo
-
-👉 https://foodhubbd.vercel.app
-
-### 👨‍💻 Author
-
-Al Amin Sheikh
-Full-Stack Web Developer (MERN / Next.js / Prisma)
-
-🔗 LinkedIn: [Al Amin Sheikh](https://www.linkedin.com/in/azalamin/)
-
-🌐 Live Project: [View](https://foodhubbd.vercel.app)
-
-<p align="center"> <b>Built with obsession for clean architecture, performance, and real-world scalability.</b> </p>
+- **LinkedIn:** [linkedin.com/in/azalamin](https://www.linkedin.com/in/azalamin/)
+- **Live Marketplace:** [foodhubbd.vercel.app](https://foodhubbd.vercel.app)
